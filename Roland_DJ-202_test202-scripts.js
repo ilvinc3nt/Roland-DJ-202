@@ -1,0 +1,1221 @@
+/*
+ *script reference: https://github.com/mixxxdj/mixxx/wiki/Midi-Scripting
+ */
+
+ var DJ202 = {};
+
+ /////////////////
+ // Tweakables. //
+ /////////////////
+ 
+ DJ202.stripSearchScaling = 0.15;
+ DJ202.tempoRange = [0.08, 0.16, 0.5];
+ DJ202.autoShowFourDecks = false; 
+ 
+ 
+
+ // **********  Code Start ********
+ 
+ 
+ DJ202.init = function() {
+    
+ 
+     DJ202.deck = [];
+     for (let i = 0; i < 4; i++) {
+         DJ202.deck[i] = new DJ202.Deck(i + 1, i);
+         DJ202.deck[i].setCurrentDeck("[Channel" + (i + 1) + "]");
+     }
+ 
+     // LEDs SAMPLER PADs ---> without NO LEDs on PADs
+    DJ202.initSamplerLeds();
+
+    //Sequencer
+    DJ202.sequencer = new DJ202.Sequencer();
+
+
+
+    //LOAD BUTTON TO DECK 1,2,3,4
+ 
+ DJ202.leftLoadTrackButton = new components.Button({
+ 
+     group: "[Channel1]",
+     midi: [0x9F, 0x02],
+     unshift: function() {
+     this.inKey = "LoadSelectedTrack";
+     },
+     
+     shift: function() {
+     this.inKey = "eject";
+     },
+     
+     input: function(channel, control, value, status, _group) {
+     this.send(this.isPress(channel, control, value, status) ? this.on : this.off);
+     components.Button.prototype.input.apply(this, arguments);    
+     },
+     
+     updateLed: function() {    
+     // Controlla se c'è una traccia caricata
+     const hasTrack = engine.getValue(this.group, "track_samples") > 0;     
+     
+     // Aggiorna lo stato del LED
+     this.send(hasTrack ? this.on : this.off);
+     },
+     });
+      
+     // Aggiorna periodicamente lo stato del LED
+     engine.makeConnection("[Channel1]", "track_samples", function() {
+     DJ202.leftLoadTrackButton.updateLed();
+     });    
+     
+     DJ202.deck3Button = new DJ202.DeckToggleButton({
+     midi: [0x90, 0x08],
+     decks: [1, 3],
+     loadTrackButton: DJ202.leftLoadTrackButton,
+     });
+        
+     DJ202.rightLoadTrackButton = new components.Button({
+     group: "[Channel2]",
+     midi: [0x9F, 0x02],
+     unshift: function() {
+     this.inKey = "LoadSelectedTrack";
+     },
+     
+     shift: function() {
+     this.inKey = "eject";
+     },
+     
+     input: function(channel, control, value, status, _group) {
+     this.send(this.isPress(channel, control, value, status) ? this.on : this.off);
+     components.Button.prototype.input.apply(this, arguments);
+     },
+     
+     updateLed: function() {
+     // Controlla se c'è una traccia caricata
+     const hasTrack = engine.getValue(this.group, "track_samples") > 0;
+          
+     // Aggiorna lo stato del LED
+     this.send(hasTrack ? this.on : this.off);
+     },
+     
+     });
+     
+     DJ202.deck4Button = new DJ202.DeckToggleButton({
+     midi: [0x91, 0x08],
+     decks: [2, 4],
+     loadTrackButton: DJ202.rightLoadTrackButton,
+     });
+     
+
+    // *********** MAIN VOLUME/KNOB SECTION ************************
+    //MASTER VOLUME
+    DJ202.masterGain = new components.Pot({
+        midi: [0xBF, 0x0E],  // Messaggio MIDI per il volume master
+        group: "[Master]",
+        inKey: "pregain",  // Associa il controllo al volume master
+        input: function(value) {
+            // Scala il valore MIDI (0-127) a un intervallo tra 0.0 e 1.0
+            const mappedVolume = value / 127 * 5.0;
+    
+            // Imposta il volume master in Mixxx
+            engine.setValue("[Master]", "gain", mappedVolume);  // Impostazione del volume master
+    
+            // Imposta anche il pregain, se necessario (se vuoi che entrambi si aggiornino)
+            engine.setValue("[Master]", "pregain", mappedVolume);
+    
+            // Mantieni il comportamento di base del potenziometro
+            this.max = 0x7F;  // Imposta il massimo a 0x7F (127)
+            components.Pot.prototype.input.apply(this, arguments);  // Applica la logica di input predefinita
+        }
+    });
+    
+    
+    //CUE/MASTER
+    DJ202.cueMasterVolume = new components.Pot({
+        midi: [0xBF, 0x0D],  // Messaggio MIDI per il controllo volume CUE/MASTER
+        group: "[Master]",
+        inKey: "headMix",  // Associa il controllo a headMix
+        input: function(value) {
+            // Mappa il valore MIDI (0-127) in un range tra 0.0 e 1.0 (gamma standard per Mixxx)
+            const mappedVolume = value / 127 * 5.0; // Mappa 0-127 a 0.0 - 1.0 per headMix
+
+            // Imposta il volume CUE/MASTER con il valore mappato
+            engine.setValue("[Master]", "headMix", mappedVolume);
+
+            // Mantieni il comportamento di base del potenziometro
+            this.max = 0x7F;  // Imposta il massimo a 0x7F (127)
+            components.Pot.prototype.input.apply(this, arguments);  // Applica la logica di input predefinita
+        }
+    });
+
+    //HEADPHONE VOLUME
+    DJ202.headVolume = new components.Pot({
+    midi: [0xBF, 0x0C],  // Messaggio MIDI per il controllo volume cuffie
+    group: "[Master]",
+    inKey: "headGain",  // Modifica questo campo per associare il controllo al volume cuffie
+    input: function(value) {
+        // Mappa il valore MIDI (0-127) in un range tra 0.0 e 5.0
+        const mappedVolume = (value / 127) * 10.0; // 127 MIDI value -> 0.0 - 5.0 per headGain
+
+        // Imposta il volume cuffie con il valore mappato
+        engine.setValue("[Master]", "headGain", mappedVolume);
+
+        // Mantieni il comportamento di base del potenziometro
+        this.max = 0x7F;  // Imposta il massimo a 0x7F (127)
+        components.Pot.prototype.input.apply(this, arguments);  // Applica la logica di input predefinita
+    }
+});
+
+
+
+    
+    
+   
+
+     // *********** EFFECT SECTION ************************
+ 
+     DJ202.effectUnit = [];
+     for (let i = 0; i <= 1; i++) {
+         DJ202.effectUnit[i] = new components.EffectUnit([i + 1, i + 3]);
+         DJ202.effectUnit[i].sendShifted = true;
+         //DJ202.effectUnit[i].shiftOffset = 0x0B;
+         DJ202.effectUnit[i].shiftControl = true;
+         DJ202.effectUnit[i].enableButtons[1].midi = [0x98 + i, 0x00]; 
+         DJ202.effectUnit[i].enableButtons[2].midi = [0x98 + i, 0x01]; 
+         DJ202.effectUnit[i].enableButtons[3].midi = [0x98 + i, 0x02];       
+         DJ202.effectUnit[i].effectFocusButton.midi = [0x98 + i, 0x04];
+         DJ202.effectUnit[i].knobs[1].midi = [0xB8 + i, 0x00];
+        
+         for (let j = 1; j <= 4; j++) {
+             DJ202.effectUnit[i].enableOnChannelButtons.addButton("Channel" + j);
+             DJ202.effectUnit[i].enableOnChannelButtons["Channel" + j].midi = [0x98 + i, 0x04 + j];
+         }   
+         
+         DJ202.effectUnit[i].init();
+     }
+ 
+     engine.makeConnection("[Channel3]", "track_loaded", DJ202.autoShowDecks);
+     engine.makeConnection("[Channel4]", "track_loaded", DJ202.autoShowDecks);
+ 
+     DJ202.autoShowDecks = function(_value, _group, _control) {
+         const anyLoaded = engine.getValue("[Channel3]", "track_loaded") || engine.getValue("[Channel4]", "track_loaded");
+         if (!DJ202.autoShowFourDecks) {
+             return;
+         }
+         engine.setValue("[Master]", "show_4decks", anyLoaded);
+     };
+ 
+ 
+     // Send Serato SysEx messages to request initial state and unlock pads
+     midi.sendSysexMsg([0xF0, 0x00, 0x20, 0x7F, 0x00, 0xF7], 6);
+     midi.sendSysexMsg([0xF0, 0x00, 0x20, 0x7F, 0x01, 0xF7], 6);
+ 
+     // Send "keep-alive" message to keep controller in Serato mode (usato per tenere i led degli effetti accesi)
+     engine.beginTimer(500, () => {
+         midi.sendShortMsg(0xBF, 0x64, 0x00);
+     });
+ 
+     // Reset LEDs
+     //linked to TRACK LOAD
+     DJ202.deck3Button.trigger();
+     DJ202.deck4Button.trigger();
+     for (let i = 0; i < 4; i++) {
+         DJ202.deck[i].reconnectComponents();
+     }
+ };
+ 
+ DJ202.shutdown = function() {
+ };
+ 
+ // ********************* BROWSING LIBRARY *************************
+ DJ202.browseEncoder = new components.Encoder({
+     isListExpanded: false, // Stato per controllare se la lista è espansa
+     isLongPressed: false,  // Stato per rilevare un long press
+     clickTimer: 0,         // Timer per distinguere short e long click
+     clickTimeout: 500,     // Durata in ms per distinguere short e long click
+     isClickInProgress: false, // Stato per indicare che un click è in corso
+ 
+     resetState: function() {
+         // Reimposta lo stato del knob dopo un click
+         this.isLongPressed = false;
+         this.isClickInProgress = false;
+     },
+ 
+     unshift: function() {
+         this.onKnobEvent = function(rotateValue) {
+             if (rotateValue !== 0) {
+                 if (!this.isClickInProgress) {
+                     if (!this.isListExpanded) {
+                         // Naviga tra le playlist o contenitori
+                         engine.setValue("[Playlist]", "SelectPlaylist", rotateValue);
+                     } else {
+                         // Naviga tra i brani
+                         engine.setValue("[Playlist]", "SelectTrackKnob", rotateValue);
+                     }
+                 }
+             }
+         };
+ 
+         this.onButtonEvent = function(value) {
+             if (value) {
+                 // Inizio del click
+                 this.isLongPressed = false;
+                 this.isClickInProgress = true;
+ 
+                 // Avvia un timer per rilevare il long click
+                 this.clickTimer = engine.beginTimer(
+                     this.clickTimeout,
+                     () => {
+                         this.isLongPressed = true;
+                         // Long click: cambia sezione (libreria <-> brani)
+                         script.triggerControl("[Playlist]", "ToggleSelectedSidebarItem");
+                         this.resetState();
+                     },
+                     true
+                 );
+             } else {
+                 // Fine del click
+                 if (this.clickTimer !== 0) {
+                     engine.stopTimer(this.clickTimer);
+                     this.clickTimer = 0;
+                 }
+ 
+                 if (!this.isLongPressed) {
+                     // Short click: espandi o contrai la lista
+                     if (!this.isListExpanded) {
+                         script.triggerControl("[Playlist]", "ToggleSelectedSidebarItem");
+                         this.isListExpanded = true;
+                     } else {
+                         script.triggerControl("[Playlist]", "LoadSelectedSidebarItem");
+                         this.isListExpanded = false;
+                     }
+                 }
+ 
+                 // Reimposta lo stato
+                 this.resetState();
+             }
+         };
+     },
+ 
+     shift: function() {
+         this.onKnobEvent = function(rotateValue) {
+             if (rotateValue !== 0) {
+                 // Cambia colore delle tracce in modalità shift
+                 const key = (rotateValue > 0) ? "track_color_next" : "track_color_prev";
+                 engine.setValue("[Library]", key, 1.0);
+             }
+         };
+ 
+         this.onButtonEvent = function(value) {
+             if (value) {
+                 this.trackColorCycleEnabled = true;
+             } else {
+                 this.trackColorCycleEnabled = false;
+             }
+         };
+     },
+ 
+     input: function(channel, control, value, status, _group) {
+         switch (status) {
+             case 0xBF: { // Rotazione del knob
+                 const rotateValue = (value === 127) ? -1 : ((value === 1) ? 1 : 0);
+                 this.onKnobEvent(rotateValue);
+                 break;
+             }
+             case 0x9F: // Pressione del knob
+                 this.onButtonEvent(value);
+                 break;
+         }
+     },
+ });
+ 
+ 
+ 
+     DJ202.sortLibrary = function(channel, control, value, _status, _group) {
+     if (value === 0) {
+     return;
+     }
+      
+     let sortColumn;
+     switch (control) {
+     case 0x12: // SONG
+     sortColumn = 2;
+     break;
+     
+     case 0x13: // BPM
+     sortColumn = 15;
+     break;
+     default:
+     
+     // unknown sort column
+     return;
+     }
+     
+     engine.setValue("[Library]", "sort_column_toggle", sortColumn);
+     
+     };
+ 
+ // ************** FINE BROWSE *************************************
+ 
+ // ============================= CROSSFADER =================================
+ DJ202.crossfader = new components.Pot({
+     midi: [0xBF, 0x08],
+     group: "[Master]",
+     inKey: "crossfader",
+     input: function() {
+         // We need a weird max. for the crossfader to make it cut cleanly.
+         // However, components.js resets max. to 0x3fff when the first value is
+         // received. Hence, we need to set max. here instead of within the
+         // constructor.
+         this.max = (0x7f<<7) + 0x70;
+         components.Pot.prototype.input.apply(this, arguments);
+     }
+ });
+ DJ202.crossfader.setCurve = function(channel, control, value, _status, _group) {
+     // 0x00 is Picnic Bench, 0x01 is Constant Power and 0x02 is Linear
+     switch (value) {
+     case 0x00:  // Picnic Bench / Fast Cut
+         engine.setValue("[Mixer Profile]", "xFaderMode", 0);
+         engine.setValue("[Mixer Profile]", "xFaderCalibration", 0.9);
+         engine.setValue("[Mixer Profile]", "xFaderCurve", 7.0);
+         break;
+     case 0x01:  // Constant Power
+         engine.setValue("[Mixer Profile]", "xFaderMode", 1);
+         engine.setValue("[Mixer Profile]", "xFaderCalibration", 0.3);
+         engine.setValue("[Mixer Profile]", "xFaderCurve", 0.6);
+         break;
+     case 0x02: // Additive
+         engine.setValue("[Mixer Profile]", "xFaderMode", 0);
+         engine.setValue("[Mixer Profile]", "xFaderCalibration", 0.4);
+         engine.setValue("[Mixer Profile]", "xFaderCurve", 0.9);
+     }
+ };
+ 
+ DJ202.crossfader.setReverse = function(channel, control, value, _status, _group) {
+     // 0x00 is ON, 0x01 is OFF
+     engine.setValue("[Mixer Profile]", "xFaderReverse", (value === 0x00) ? 1 : 0);
+ };
+ 
+ 
+ // ***************** INIZIO FUNZIONI: Sync, Tempo, Jog, Mixer, ecc... *****************
+ DJ202.Deck = function(deckNumbers, offset) {
+     components.Deck.call(this, deckNumbers);
+     
+ 
+ 
+     // ============================= JOG WHEELS =================================
+     this.wheelTouch = function(channel, control, value, _status, _group) {
+         if (value === 0x7F && !this.isShifted) {
+             const alpha = 1.0/8;
+             const beta = alpha/32;
+             engine.scratchEnable(script.deckFromGroup(this.currentDeck), 512, 45, alpha, beta);
+         } else {    // If button up
+             engine.scratchDisable(script.deckFromGroup(this.currentDeck));
+         }
+     };
+ 
+     this.wheelTurn = function(channel, control, value, _status, _group) {
+         // When the jog wheel is turned in clockwise direction, value is
+         // greater than 64 (= 0x40). If it's turned in counter-clockwise
+         // direction, the value is smaller than 64.
+         const newValue = value - 64;
+         const deck = script.deckFromGroup(this.currentDeck);
+         if (engine.isScratching(deck)) {
+             engine.scratchTick(deck, newValue); // Scratch!
+         } else if (this.isShifted) {
+             const oldPos = engine.getValue(this.currentDeck, "playposition");
+             // Since ‘playposition’ is normalized to unity, we need to scale by
+             // song duration in order for the jog wheel to cover the same amount
+             // of time given a constant turning angle.
+             const duration = engine.getValue(this.currentDeck, "duration");
+             const newPos = Math.max(0, oldPos + (newValue * DJ202.stripSearchScaling / duration));
+             engine.setValue(this.currentDeck, "playposition", newPos); // Strip search
+         } else {
+             engine.setValue(this.currentDeck, "jog", newValue); // Pitch bend
+         }
+     };      
+ 
+     // ========================== FADER SLIDE ==============================
+     engine.setValue(this.currentDeck, "rate_dir", -1);
+     this.tempoFader = new components.Pot({
+         group: "[Channel" + deckNumbers + "]",
+         midi: [0xB0 + offset, 0x09],
+         connect: function() {
+             engine.softTakeover(this.group, "pitch", true);
+             engine.softTakeover(this.group, "rate", true);
+             components.Pot.prototype.connect.apply(this, arguments);
+         },
+         unshift: function() {
+             this.inKey = "rate";
+             this.inSetParameter = components.Pot.prototype.inSetParameter;
+             engine.softTakeoverIgnoreNextValue(this.group, "pitch");
+         },
+         shift: function() {
+             this.inKey = "pitch";
+             this.inSetParameter = function(value) {
+                 // Scale to interval ]-7…7[; invert direction as per controller
+                 // labeling.
+                 value = 14 * value - 7;
+                 value *= -1;
+                 components.Pot.prototype.inSetValue.call(this, value);
+             };
+             engine.softTakeoverIgnoreNextValue(this.group, "rate");
+         }
+     });
+ 
+     // ========================== KEY LOCK ==============================                  
+     this.keylock = new components.Button({
+         midi: [0x90 + offset, 0x0D],
+         sendShifted: true,
+         shiftControl: true,
+         shiftOffset: 1,
+         outKey: "keylock",
+         currentRangeIndex: (DJ202.tempoRange.indexOf(engine.getValue("[Channel" + deckNumbers + "]", "rateRange"))) ? DJ202.tempoRange.indexOf(engine.getValue("[Channel" + deckNumbers + "]", "rateRange")) : 0,
+         unshift: function() {
+             this.inKey = "keylock";
+             this.input = components.Button.prototype.input;
+             this.type = components.Button.prototype.types.toggle;
+         },
+         shift: function() {
+             this.inKey = "rateRange";
+             this.type = undefined;
+             this.input = function(channel, control, value, status, _group) {
+                 if (this.isPress(channel, control, value, status)) {
+                     this.currentRangeIndex++;
+                     if (this.currentRangeIndex >= DJ202.tempoRange.length) {
+                         this.currentRangeIndex = 0;
+                     }
+                     this.inSetValue(DJ202.tempoRange[this.currentRangeIndex]);
+                 }
+             };
+         },
+     });
+ 
+     // ============================= SLIP BUTTON =======================
+ 
+     this.slipModeButton = new DJ202.SlipModeButton({
+         midi: [0x90 + offset, 0x07],
+         //shiftOffset: -8,
+         //shiftControl: true,
+        //sendShifted: true,
+     });
+
+    // ============================= SHIFT BUTTON =======================
+    DJ202.shiftButton = function(channel, control, value, _status, _group) {
+        DJ202.deck.forEach(
+            value ? function(module) { module.shift(); } : function(module) { module.unshift(); }
+        );
+    };
+    
+
+
+     // Pulsante SHIFT
+     this.shiftButton = new components.Button({
+        midi: [0x90 + offset, 0x00], // Assumendo che SHIFT abbia Control 0x00
+        input: function(channel, control, value, status, group) {
+            DJ202.isShiftActive = (value === 0x7F);
+            console.log(`SHIFT ${DJ202.isShiftActive ? "attivato" : "disattivato"}`);
+        }
+    });
+
+
+
+  
+     // ============================= SYNC BUTTON ==========================
+     this.sync = new components.Button({
+        midi: [0x90 + offset, 0x02],
+        group: "[Channel" + deckNumbers + "]",
+        outKey: "sync_mode",
+        output: function(value, group, control) {
+            if (this.connections[1] !== undefined) {
+                this.connections[1].disconnect();
+                delete this.connections[1];
+            }
+
+            // If the new sync_mode is "Explicit Leader", use the blinking
+            // indicator for the LED instead.
+            if (value === 2) {
+                if (this.connections[1] === undefined) {
+                    this.connections[1] = engine.makeConnection("[App]", "indicator_500ms", this.setLed.bind(this));
+                }
+                return;
+            }
+
+            this.setLed(value, group, control);
+        },
+        setLed: function(value, _group, _control) {
+            midi.sendShortMsg(this.midi[0], value ? 0x02 : 0x03, this.on);
+        },
+        input: function(channel, control, value, _status, _group) {
+            if (control === 0x02) { // Ensure the input is from the SYNC button
+                const currentTime = new Date().getTime();
+        
+                if (value === 0x7F) { // Button pressed
+                    if (this.lastPressTime && (currentTime - this.lastPressTime) < this.doubleTapTimeout) {
+                        // Detected double tap
+                        if (this.longPressTimer) {
+                            engine.stopTimer(this.longPressTimer);
+                            this.longPressTimer = 0;
+                        }
+                        this.onDoubleTap();
+                        this.lastPressTime = 0; // Reset last press time
+                    } else {
+                        // Start a timer to distinguish between short and long press
+                        if (!this.longPressTimer) {
+                            this.longPressTimer = engine.beginTimer(this.longPressTimeout, () => {
+                                this.onLongPress();
+                                this.longPressTimer = 0;
+                                this.lastPressTime = 0; // Reset last press time to avoid double tap conflicts
+                            }, true);
+                        }
+        
+                        // Provide immediate feedback by lighting up the LED
+                        this.setLed(1, this.group, null);
+                    }
+                    this.lastPressTime = currentTime;
+                } else if (value === 0x00) { // Button released
+                    if (this.longPressTimer !== 0) {
+                        // Short press: Stop the timer and trigger short press action
+                        engine.stopTimer(this.longPressTimer);
+                        this.longPressTimer = 0;
+                        this.onShortPress();
+                    }
+        
+                    // Turn off the LED upon release
+                    this.setLed(0, this.group, null);
+                }
+            }
+        },
+        
+        unshift: function() {
+            this.onShortPress = function() {
+                script.triggerControl(this.group, "beatsync", 1);
+            };
+
+            this.onDoubleTap = function() {
+                engine.setValue(this.group, "quantize", !engine.getValue(this.group, "quantize"));
+            };
+
+            this.onLongPress = function() {
+                if (engine.getValue(this.group, "sync_enabled")) {
+                    // If already explicit leader, reset explicit state
+                    // (setting it to 0 may still make it implicit leader and
+                    // immediately resetting it to 1).
+                    const value = (engine.getValue(this.group, "sync_leader") === 2) ? 0 : 2;
+                    engine.setValue(this.group, "sync_leader", value);
+                } else {
+                    engine.setValue(this.group, "sync_enabled", 1);
+                }
+            };
+        },
+
+        doubleTapTimeout: 300, // Timeout for detecting double tap (in ms)
+        longPressTimeout: 500 // Timeout for detecting long press (in ms)
+
+    });
+ 
+     // ========================== CUE, Play Button ==============================
+ 
+     this.cue = new components.CueButton({
+         midi: [0x90 + offset, 0x01],
+         sendShifted: true,
+         shiftControl: true,
+         shiftOffset: 4,
+         reverseRollOnShift: true,
+         input: function(channel, control, value, status, group) {
+             components.CueButton.prototype.input.call(this, channel, control, value, status, group);
+             if (value) {
+                 return;
+             }
+             const state = engine.getValue(group, "cue_indicator");
+             if (state) {
+                 this.trigger();
+             }
+         }
+     });
+ 
+     this.play = new components.PlayButton({
+         midi: [0x90 + offset, 0x00],
+         sendShifted: true,
+         shiftControl: true,
+         shiftOffset: 4,
+
+         unshift : function() {
+         this.inKey = 'play';
+         this.input = function(channel, control, value, status, group) {
+            if (value) { // Button press.
+                var isPlaying = engine.getValue(group, 'play');
+        } // Else: Button release.
+
+        if (this.longPressed) { // Release after long press.
+            var deck = script.deckFromGroup(group);
+            var pressDuration = new Date() - this.longPressStart;
+            if (isPlaying && !this.isBraking) {
+              engine.brake(deck, true, 1000 / pressDuration);
+              this.isBraking = true;
+            } else {
+              engine.softStart(deck, true, 1000 / pressDuration);
+              this.isBraking = false;
+            }
+            this.longPressed = false;
+            return;
+          } // Else: Release after short press.
+  
+          this.isBraking = false;
+          script.toggleControl(group, 'play', !isPlaying);
+  
+          if (this.longPressTimer) {
+            engine.stopTimer(this.longPressTimer);
+            this.longPressTimer = null;
+          }
+        };
+      },
+
+         shift : function() {
+            this.inKey = 'reverse';
+            this.input = function(channel, control, value, status, group) {
+              components.Button.prototype.input.apply(this, arguments);
+              if (!value) {
+                this.trigger();
+              }
+            };
+          }
+     });
+ 
+     // =============================== MIXER ZONE ====================================
+     this.pregain = new components.Pot({
+         midi: [0xB0 + offset, 0x16],
+         group: "[Channel" + deckNumbers + "]",
+         inKey: "pregain",
+     });
+ 
+     this.eqKnob = [];
+     for (let k = 1; k <= 3; k++) {
+         this.eqKnob[k] = new components.Pot({
+             midi: [0xB0 + offset, 0x20 - k],
+             group: "[EqualizerRack1_" + this.currentDeck + "_Effect1]",
+             inKey: "parameter" + k,
+         });
+     }
+ 
+     this.filter = new components.Pot({
+         midi: [0xB0 + offset, 0x1A],
+         group: "[QuickEffectRack1_" + this.currentDeck + "]",
+         inKey: "super1",
+     });
+     //Pre-ascolto 'CUE'
+     this.pfl = new components.Button({
+         midi: [0x90 + offset, 0x1B],
+         group: "[Channel" + deckNumbers + "]",
+         type: components.Button.prototype.types.toggle,
+         inKey: "pfl",
+         outKey: "pfl",
+     });
+ 
+     this.tapBPM = new components.Button({
+         midi: [0x90 + offset, 0x12],
+         group: "[Channel" + deckNumbers + "]",
+         input: function(_channel, _control, value, _status, group) {
+             if (value) {
+                 this.longPressTimer = engine.beginTimer(this.longPressTimeout, () => {
+                     this.onLongPress(group);
+                     this.longPressTimer = 0;
+                 }, true);
+             } else if (this.longPressTimer !== 0) {
+                 // Button released after short press
+                 engine.stopTimer(this.longPressTimer);
+                 this.longPressTimer = 0;202
+                 this.onShortPress(group);
+             }
+         },
+         onShortPress: function(group) {
+             script.triggerControl(group, "beats_translate_curpos");
+         },
+         onLongPress: function(group) {
+             script.triggerControl(group, "beats_translate_match_alignment");
+         },
+     });
+ 
+     this.volume = new components.Pot({
+         midi: [0xB0 + offset, 0x1C],
+         group: "[Channel" + deckNumbers + "]",
+         inKey: "volume",
+     });
+ 
+ };
+ 
+ function setHeadphoneVolume(volume) {
+    // Implementa la logica per impostare il volume delle cuffie nel tuo sistema
+    console.log(`Volume cuffie impostato a: ${volume * 100}%`);
+}
+ 
+ ///////FINEEEEEE
+ 
+ 
+ 
+ DJ202.Deck.prototype = Object.create(components.Deck.prototype);
+ 
+ 
+ DJ202.DeckToggleButton = function(options) {
+     this.secondaryDeck = false;
+     components.Button.call(this, options);
+ };
+ DJ202.DeckToggleButton.prototype = Object.create(components.Button.prototype);
+ DJ202.DeckToggleButton.prototype.input = function(channel, control, value, status, _group) {
+     if (this.isPress(channel, control, value, status)) {
+         // Button was pressed
+         this.longPressTimer = engine.beginTimer(
+             this.longPressTimeout,
+             () => { this.isLongPressed = true; },
+             true
+         );
+         this.secondaryDeck = !this.secondaryDeck;
+     } else if (this.isLongPressed) {
+         // Button was released after long press
+         this.isLongPressed = false;
+         this.secondaryDeck = !this.secondaryDeck;
+     } else {
+         // Button was released after short press
+         engine.stopTimer(this.longPressTimer);
+         this.longPressTimer = null;
+         return;
+     }
+ 
+     this.trigger();
+ };
+ 
+ DJ202.DeckToggleButton.prototype.trigger = function() {
+     this.send(this.secondaryDeck ? this.on : this.off);
+     const newGroup = "[Channel" + (this.secondaryDeck ? this.decks[1] : this.decks[0]) + "]";
+     if (this.loadTrackButton.group !== newGroup) {
+         this.loadTrackButton.group = newGroup;
+         this.loadTrackButton.disconnect();
+         this.loadTrackButton.connect();
+         this.loadTrackButton.trigger();
+     }
+ };
+ 
+ // =============================  SLIP FUNCTION & VINYL CONTROL ==================================
+ DJ202.SlipModeButton = function(options) {
+    components.Button.call(this, options);
+};
+DJ202.SlipModeButton.prototype = Object.create(components.Button.prototype);
+
+// Comportamento senza Shift (Slip Mode)
+DJ202.SlipModeButton.prototype.unshift = function() {
+    this.inKey = "slip_enabled";
+    this.outKey = "slip_enabled";
+    this.type = components.Button.prototype.types.toggle;
+
+    // Comportamento semplice: attiva/disattiva Slip Mode con un singolo tap
+    this.input = function(channel, control, value, _status, _group) {
+        if (value) { // Solo sul "press", non sul "release"
+            const slipEnabled = engine.getValue(this.group, "slip_enabled");
+            engine.setValue(this.group, "slip_enabled", !slipEnabled); // Toggle Slip Mode
+            console.log(`Slip Mode ${!slipEnabled ? "attivato" : "disattivato"}`);
+        }
+    };
+
+    this.disconnect();
+    this.connect();
+    this.trigger();
+};
+
+// Comportamento con Shift (Vinyl Control)
+DJ202.SlipModeButton.prototype.shift = function() {
+    this.inKey = "vinylcontrol_enabled";
+    this.outKey = "vinylcontrol_enabled";
+    this.type = components.Button.prototype.types.toggle;
+
+    // Comportamento semplice: attiva/disattiva Vinyl Control
+    this.input = function(channel, control, value, _status, _group) {
+        if (value) { // Solo sul "press", non sul "release"
+            const vinylEnabled = engine.getValue(this.group, "vinylcontrol_enabled");
+            engine.setValue(this.group, "vinylcontrol_enabled", !vinylEnabled); // Toggle Vinyl Control
+            console.log(`Vinyl Control ${!vinylEnabled ? "attivato" : "disattivato"}`);
+        }
+    };
+
+    this.disconnect();
+    this.connect();
+    this.trigger();
+ };
+ 
+ 
+//************************ Button: Hotcue Loop, Sequencer, Sampler **************************
+ //**************************** LED ON PADS  ***********************************/ 
+DJ202.PadsColor = {
+    OFF: 0x00,
+    YELLOW: 0x04,
+    RED: 0x01,
+};
+
+DJ202.setPadLed = function(control, color) {
+    midi.sendShortMsg(0x94, control, color); // 0x94 è lo status per il canale 1, NOTE ON
+};
+
+
+ //**************************** TAP ON PADS  ***********************************/
+ DJ202.handlePad = function(channel, control, value, status, group) {
+    const isPressed = value === 0x7F;
+
+    // Ignora rilascio per le funzioni normali (rilascio gestito solo in handleRoll)
+    if (!isPressed && !(control >= 0x19 && control <= 0x20)) return;
+
+    if (control >= 0x01 && control <= 0x08) {
+        // HOTCUE
+        DJ202.handleHotcue(control, group);
+    } else if (control >= 0x09 && control <= 0x10) {
+        // HOTCUE DELETE (SHIFT + PAD 1–8)
+        DJ202.handleHotcueDelete(control, group);
+    } else if (control >= 0x11 && control <= 0x18) {
+        // LOOP (PAD 1–8 in modalità LOOP)
+        DJ202.handleLoop(control, group);
+    } else if (control >= 0x19 && control <= 0x1C) {
+        // ROLL (SHIFT + PAD 1–4) → PAD temporaneo
+        DJ202.handleRoll(control, group, isPressed);
+    } else if (control >= 0x1D && control <= 0x20) {
+        // ROLL altri (SHIFT + LOOP_IN, LOOP_OUT, ecc.)
+        DJ202.handleRoll(control, group, isPressed);
+    } else if (control >= 0x21 && control <= 0x28) {
+        // SAMPLER
+        DJ202.handleSampler(control, group);
+    } else {
+        print(`[WARNING] PAD sconosciuto. control=${control}`);
+    }
+};
+
+
+// ********************** PARAM -/+ SECTION ***************************
+DJ202.handlePad.prototype.paramButtonPressed = function(channel, control, value, status, group) {
+    if (!this.currentMode) {
+        return;
+    }
+    let button;
+    switch (control) {
+    case 0x4B: // PARAMETER 2 - (shifted)
+        if (this.currentMode.param2MinusButton) {
+            button = this.currentMode.param2MinusButton;
+            break;
+        }
+        /* falls through */
+    case 0x43: // PARAMETER -
+        button = this.currentMode.paramMinusButton;
+        break;
+    case 0x4C: // PARAMETER 2 + (shifted)
+        if (this.currentMode.param2PlusButton) {
+            button = this.currentMode.param2PlusButton;
+            break;
+        }
+        /* falls through */
+    case 0x44: // PARAMETER +
+        button = this.currentMode.paramPlusButton;
+        break;
+    }
+    if (button) {
+        button.input(channel, control, value, status, group);
+    }
+};
+
+// ********************* HOTCUE mode - PADs ***********************
+DJ202.updateAllHotcueLeds = function(group) {
+    for (let i = 0x01; i <= 0x08; i++) {
+        DJ202.updateHotcuePadLed(i, group);
+    }
+};
+
+DJ202.updateHotcuePadLed = function(control, group) {
+    const index = control - 0x01;
+    const hotcueSet = engine.getValue(group, `hotcue_${index + 1}_enabled`);
+
+    if (hotcueSet) {
+        DJ202.setPadLed(control, DJ202.PadsColor.YELLOW); // Hotcue presente
+    } else {
+        DJ202.setPadLed(control, DJ202.PadsColor.OFF); // Nessun hotcue
+    }
+};
+
+DJ202.handleHotcue = function(control, group) {
+    const index = control - 0x01;
+    engine.setValue(group, `hotcue_${index + 1}_activatecue`, true);
+    DJ202.updateHotcuePadLed(control, group);
+
+    // ************* PARAM -/+
+    this.paramMinusButton = new components.Button({
+        midi: [0x94 + offset, 0x43],
+        group: deck.currentDeck,
+        outKey: "hotcue_focus_color_prev",
+        inKey: "hotcue_focus_color_prev",
+    });
+    this.paramPlusButton = new components.Button({
+        midi: [0x94 + offset, 0x44],
+        group: deck.currentDeck,
+        outKey: "hotcue_focus_color_next",
+        inKey: "hotcue_focus_color_next",
+    });
+    this.param2MinusButton = new components.Button({
+        midi: [0x94 + offset, 0x4B],
+        group: deck.currentDeck,
+        outKey: "beats_translate_earlier",
+        inKey: "beats_translate_earlier",
+    });
+    this.param2PlusButton = new components.Button({
+        midi: [0x94 + offset, 0x4C],
+        group: deck.currentDeck,
+        outKey: "beats_translate_later",
+        inKey: "beats_translate_later",
+    });
+
+};
+
+DJ202.handleHotcueDelete = function(control, group) {
+    const index = control - 0x09;
+    engine.setValue(group, `hotcue_${index + 1}_clear`, true);
+    DJ202.updateHotcuePadLed(control - 0x08, group); // Corrisponde al pad normale (0x01 - 0x08)
+};
+
+
+// ********************* LOOP mode - PADs ***********************
+// Mappa delle dimensioni del loop per ogni PAD
+DJ202.loopSizes = {
+    0x11: 0.125, // PAD1 (0x11): 1/8
+    0x12: 0.25,  // PAD2 (0x12): 1/4
+    0x13: 0.5,    // PAD3 (0x13): 1/2
+    0x14: 1,    // PAD4 (0x14): 1
+    0x15: 2,    // PAD5 (0x15): 2
+    0x16: 4,    // PAD6 (0x16): 4
+    0x17: 8,   // PAD7 (0x17): 8
+    0x18: 16    // PAD8 (0x18): 16
+};
+
+// Ogni pad ha uno stato per sapere se il loop è attivo o no
+DJ202.padState = {
+    0x11: false, // PAD1
+    0x12: false, // PAD2
+    0x13: false, // PAD3
+    0x14: false, // PAD4
+    0x15: false, // PAD5
+    0x16: false, // PAD6
+    0x17: false, // PAD7
+    0x18: false  // PAD8
+};
+
+// Gestione LOOP per ogni PAD
+DJ202.handleLoop = function(control, group) {
+    const loopSize = DJ202.loopSizes[control];
+    if (loopSize === undefined) {
+        console.warn("PAD sconosciuto. Nessuna azione per control: ", control);
+        return;
+    }
+
+    const loopEnabled = engine.getValue(group, "loop_enabled");
+
+    if (!loopEnabled && !DJ202.padState[control]) {
+        engine.setValue(group, "beatloop_" + loopSize, 1);
+        DJ202.padState[control] = true;
+        DJ202.setPadLed(control, DJ202.PadsColor.YELLOW); // Accendi giallo
+        console.log(`Loop attivato su PAD ${control} con dimensione ${loopSize}`);
+    } else {
+        engine.setValue(group, "loop_enabled", false);
+        DJ202.padState[control] = false;
+        DJ202.setPadLed(control, DJ202.PadsColor.OFF); // Spegni
+        console.log(`Loop disattivato su PAD ${control}`);
+    }
+};
+
+
+
+// ********************* SAMPLER mode - PADs ***********************
+DJ202.initSamplerLeds = function() {
+    for (let i = 0; i < 8; i++) {
+        const group = `[Sampler${i + 1}]`;
+        const control = 0x21 + i;
+
+        // Monitora quando viene caricato o scaricato un campione
+        engine.makeConnection(group, "track_loaded", function(value) {
+            if (value) {
+                const isPlaying = engine.getValue(group, "play");
+                const color = isPlaying ? DJ202.PadsColor.RED : DJ202.PadsColor.YELLOW;
+                DJ202.setPadLed(control, color);
+            } else {
+                DJ202.setPadLed(control, DJ202.PadsColor.OFF);
+            }
+        });
+
+        // Monitora lo stato di riproduzione per cambiare da giallo a rosso e viceversa
+        engine.makeConnection(group, "play", function(value) {
+            const isLoaded = engine.getValue(group, "track_loaded");
+            if (!isLoaded) return;
+
+            if (value === 1) {
+                DJ202.setPadLed(control, DJ202.PadsColor.RED);
+            } else {
+                DJ202.setPadLed(control, DJ202.PadsColor.YELLOW);
+            }
+        });
+    }
+};
+
+DJ202.sampler = {
+    handlePadSampler: function(channel, control, value, status, group) {
+        if (value === 0x7F) {
+            const loaded = engine.getValue(group, "track_loaded");
+            if (loaded) {
+                engine.setValue(group, "cue_gotoandplay", 1);
+                console.log(`▶ Avvio campione in ${group}`);
+            } else {
+                console.log(`⚠ Nessun campione caricato in ${group}`);
+            }
+        }
+    },
+
+    handleLevelKnob: function(channel, control, value, status) {
+        const scaledValue = value / 32;
+
+        for (let i = 1; i <= 8; i++) {
+            const samplerGroup = `[Sampler${i}]`;
+            engine.setValue(samplerGroup, "pregain", scaledValue);
+        }
+
+        const uiValue = scaledValue * 127;
+        engine.setValue("[Sampler]", "pregain", uiValue);
+    },
+};
+
+
+// ************************** SECONDARY FUNCTIONS (CueLoop, Roll, ecc...) *******************
+// ********************* CUE LOOP mode - PADs ***********************
+
+
+
+
+
+// ********************* ROLL mode - PADs ***********************
+DJ202.rollSizes = {
+    0x19: 1,   // 1 beat
+    0x1A: 2,   // 2 beat
+    0x1B: 4,   // 4 beat
+    0x1C: 8,   // 2 beats
+};
+
+DJ202.handleRoll = function(control, group, isPressed) {
+    const inKeyMap = {
+        0x1D: 'loop_in',
+        0x1E: 'loop_out',
+        0x1F: 'reloop_andstop',
+        0x20: 'reloop_toggle',
+    };
+
+    const outKeyMap = {
+        0x1D: 'loop_in',
+        0x1E: 'loop_end_position',
+        0x1F: 'reloop_andstop',
+        0x20: 'reloop_enabled',
+    };
+
+    // --- PADs 0x19–0x1C = beatlooproll temporaneo (ROLL) ---
+    if (DJ202.rollSizes.hasOwnProperty(control)) {
+        const loopSize = DJ202.rollSizes[control];
+
+        if (isPressed) {
+            // Attiva il loop temporaneo
+            engine.setValue(group, "beatlooproll_" + loopSize + "_activate", true);
+            DJ202.setPadLed(control, DJ202.PadsColor.YELLOW); // Giallo acceso
+            print(`ROLL ATTIVATO: PAD ${control} → ${loopSize} beat`);
+        } else {
+            // Disattiva il loop temporaneo al rilascio
+            engine.setValue(group, "beatlooproll_" + loopSize + "_activate", false);
+            engine.setValue(group, "beatloop_" + loopSize + "_enabled", false);
+            DJ202.setPadLed(control, DJ202.PadsColor.OFF); // Spegne LED
+            print(`ROLL DISATTIVATO: PAD ${control} → ${loopSize} beat`);
+        }
+
+        return;
+    }
+
+    // --- PADs 0x1D–0x20 = loop_in, loop_out, ecc. ---
+    if (inKeyMap[control]) {
+        if (isPressed) {
+            engine.setValue(group, inKeyMap[control], 1);
+            DJ202.setPadLed(control, DJ202.PadsColor.RED);
+            print(`AZIONE ATTIVA: ${inKeyMap[control]} su PAD ${control}`);
+        } else {
+            engine.setValue(group, inKeyMap[control], 0);
+            engine.setValue(group, outKeyMap[control], 0);
+            DJ202.setPadLed(control, DJ202.PadsColor.OFF);
+            print(`AZIONE DISATTIVA: ${inKeyMap[control]} su PAD ${control}`);
+        }
+    }
+};
+
+// ********************* SLICER mode - PADs ***********************
+
+
+// ********************* SEQUENCER ***********************
+DJ202.getActiveDeck = function() {
+    for (let i = 0; i < 4; i++) {
+        if (engine.getValue("[Channel" + (i + 1) + "]", "play")) {
+            return i;
+        }
+    }
+    return -1;
+};
+
+DJ202.Sequencer = function() {
+    this.syncDeck = -1;
+
+    this.syncButtonPressed = function(channel, control, value, _status, _group) {
+        if (value !== 0x7f) {
+            return;
+        }
+    
+        const isShifted = (control === 0x55);
+    
+        if (isShifted) {
+            // SHIFT + SYNC → spegne il LED e azzera syncDeck
+            this.syncDeck = -1;
+    
+            // Forza il LED a spegnersi con doppio comando
+            midi.sendShortMsg(0x9F, 0x53, 0x7F); // accende (per sicurezza)
+            midi.sendShortMsg(0x8F, 0x53, 0x00); // NOTE OFF → spegne il LED
+    
+            return;
+        }
+    
+        // Premuto solo SYNC
+        const deck = DJ202.getActiveDeck();
+        if (deck < 0) {
+            script.debug("Nessun deck attivo");
+            return;
+        }
+    
+        const bpm = engine.getValue("[Channel" + (deck + 1) + "]", "bpm");
+        if (!(bpm >= 5 && bpm <= 800)) {
+            return;
+        }
+    
+        const bpmValue = Math.round(bpm * 10);
+        midi.sendShortMsg(0xEA, bpmValue & 0x7F, (bpmValue >> 7) & 0x7F);
+    
+        this.syncDeck = deck;
+    
+        // Accendi il LED SYNC
+        midi.sendShortMsg(0x9F, 0x53, 0x7F);
+    };
+    
+
+    
+    
+    this.cueButton = new components.Button({
+        group: "[Channel1]",
+        key: "pfl",
+        type: components.Button.prototype.types.toggle,
+        midi: [0x9F, 0x1D],
+        input: function(_channel, _control, _value, _status, _group) {
+            components.Button.prototype.input.apply(this, arguments);
+            const pfl = this.inGetValue();
+            for (let i = 1; i <= 16; i++) {
+                engine.setValue("[Sampler" + i + "]", this.inKey, pfl);
+            }
+        },
+    });
+};
