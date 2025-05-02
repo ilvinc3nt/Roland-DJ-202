@@ -634,52 +634,87 @@
      });
  
      this.play = new components.PlayButton({
-         midi: [0x90 + offset, 0x00],
-         sendShifted: true,
-         shiftControl: true,
-         shiftOffset: 4,
-
-         unshift : function() {
-         this.inKey = 'play';
-         this.input = function(channel, control, value, status, group) {
-            if (value) { // Button press.
-                var isPlaying = engine.getValue(group, 'play');
-        } // Else: Button release.
-
-        if (this.longPressed) { // Release after long press.
-            var deck = script.deckFromGroup(group);
-            var pressDuration = new Date() - this.longPressStart;
-            if (isPlaying && !this.isBraking) {
-              engine.brake(deck, true, 1000 / pressDuration);
-              this.isBraking = true;
+        midi: [0x90 + offset, 0x00],
+        sendShifted: true,
+        shiftControl: true,
+        shiftOffset: 4,
+      
+        unshift: function () {
+          this.inKey = 'play';
+      
+          this.input = function (channel, control, value, status, group) {
+            const deck = script.deckFromGroup(group);
+            const isPlaying = engine.getValue(group, 'play');
+      
+            if (value) {
+              // Button press
+              this.longPressed = false;
+              this.longPressStart = new Date();
+              this.longPressTimer = engine.beginTimer(300, () => {
+                this.longPressed = true;
+              }, true);
             } else {
-              engine.softStart(deck, true, 1000 / pressDuration);
-              this.isBraking = false;
-            }
-            this.longPressed = false;
-            return;
-          } // Else: Release after short press.
-  
-          this.isBraking = false;
-          script.toggleControl(group, 'play', !isPlaying);
-  
-          if (this.longPressTimer) {
-            engine.stopTimer(this.longPressTimer);
-            this.longPressTimer = null;
-          }
-        };
-      },
-
-         shift : function() {
-            this.inKey = 'reverse';
-            this.input = function(channel, control, value, status, group) {
-              components.Button.prototype.input.apply(this, arguments);
-              if (!value) {
-                this.trigger();
+              // Button release
+              if (this.longPressTimer) {
+                engine.stopTimer(this.longPressTimer);
+                this.longPressTimer = null;
               }
-            };
-          }
-     });
+      
+              const pressDuration = new Date() - this.longPressStart;
+      
+              if (this.longPressed) {
+                if (isPlaying && !this.isBraking) {
+                  engine.brake(deck, true, 1000 / pressDuration);
+                  this.isBraking = true;
+                } else {
+                  engine.softStart(deck, true, 1000 / pressDuration);
+                  this.isBraking = false;
+                }
+              } else {
+                this.isBraking = false;
+                script.toggleControl(group, 'play', !isPlaying);
+              }
+      
+              this.longPressed = false;
+            }
+          };
+        },
+      
+        shift: function () {
+          this.inKey = 'reverse';
+          this.input = function (channel, control, value, status, group) {
+            components.Button.prototype.input.apply(this, arguments);
+            if (!value) {
+              this.trigger();
+            }
+          };
+        }
+      });
+
+    // *********  REVERSE & STUTTER (CUE and PLAY/PAUSE)
+        // SHIFT + CUE (control = 0x05) → Reverse
+    this.reverse = new components.Button({
+        midi: [0x90 + offset, 0x05],
+        type: components.Button.prototype.types.toggle,
+        key: 'reverse',
+    });
+    
+    // SHIFT + PLAY (control = 0x04) → Stutter
+    this.stutter = new components.Button({
+        midi: [0x90 + offset, 0x04],
+        input: function(channel, control, value, status, group) {
+        if (value) {
+            // Simula STUTTER: ritorna alla posizione cue e riparte
+            const cuePoint = engine.getValue(group, 'cue_point');
+            engine.setValue(group, 'play', 0);
+            engine.setValue(group, 'playposition', cuePoint);
+            engine.setValue(group, 'play', 1);
+        } else {
+            engine.setValue(group, 'play', 0);
+        }
+        }
+    });
+      
  
      // =============================== MIXER ZONE ====================================
      this.pregain = new components.Pot({
@@ -884,38 +919,6 @@ DJ202.setPadLed = function(control, color) {
     }
 };
 
-
-// ********************** PARAM -/+ SECTION ***************************
-DJ202.handlePad.prototype.paramButtonPressed = function(channel, control, value, status, group) {
-    if (!this.currentMode) {
-        return;
-    }
-    let button;
-    switch (control) {
-    case 0x4B: // PARAMETER 2 - (shifted)
-        if (this.currentMode.param2MinusButton) {
-            button = this.currentMode.param2MinusButton;
-            break;
-        }
-        /* falls through */
-    case 0x43: // PARAMETER -
-        button = this.currentMode.paramMinusButton;
-        break;
-    case 0x4C: // PARAMETER 2 + (shifted)
-        if (this.currentMode.param2PlusButton) {
-            button = this.currentMode.param2PlusButton;
-            break;
-        }
-        /* falls through */
-    case 0x44: // PARAMETER +
-        button = this.currentMode.paramPlusButton;
-        break;
-    }
-    if (button) {
-        button.input(channel, control, value, status, group);
-    }
-};
-
 // ********************* HOTCUE mode - PADs ***********************
 DJ202.updateAllHotcueLeds = function(group) {
     for (let i = 0x01; i <= 0x08; i++) {
@@ -938,33 +941,6 @@ DJ202.handleHotcue = function(control, group) {
     const index = control - 0x01;
     engine.setValue(group, `hotcue_${index + 1}_activatecue`, true);
     DJ202.updateHotcuePadLed(control, group);
-
-    // ************* PARAM -/+
-    this.paramMinusButton = new components.Button({
-        midi: [0x94 + offset, 0x43],
-        group: deck.currentDeck,
-        outKey: "hotcue_focus_color_prev",
-        inKey: "hotcue_focus_color_prev",
-    });
-    this.paramPlusButton = new components.Button({
-        midi: [0x94 + offset, 0x44],
-        group: deck.currentDeck,
-        outKey: "hotcue_focus_color_next",
-        inKey: "hotcue_focus_color_next",
-    });
-    this.param2MinusButton = new components.Button({
-        midi: [0x94 + offset, 0x4B],
-        group: deck.currentDeck,
-        outKey: "beats_translate_earlier",
-        inKey: "beats_translate_earlier",
-    });
-    this.param2PlusButton = new components.Button({
-        midi: [0x94 + offset, 0x4C],
-        group: deck.currentDeck,
-        outKey: "beats_translate_later",
-        inKey: "beats_translate_later",
-    });
-
 };
 
 DJ202.handleHotcueDelete = function(control, group) {
@@ -972,6 +948,60 @@ DJ202.handleHotcueDelete = function(control, group) {
     engine.setValue(group, `hotcue_${index + 1}_clear`, true);
     DJ202.updateHotcuePadLed(control - 0x08, group); // Corrisponde al pad normale (0x01 - 0x08)
 };
+
+
+ // ************* PARAM -/+ for CUE LOPP  ********************
+ DJ202.loopSizesCueLoop = {
+    0x43: 1,
+    0x44: 2,
+    0x4B: 4,
+    0x4C: 8,
+};
+
+DJ202.paramButtonPressed = function(channel, control, value, status, group) {
+    const isPressed = value === 0x7F;
+    if (!isPressed) return;
+
+    if (!this.currentMode) {
+        return;
+    }
+
+    // Special case for cue loop in HOTCUE mode
+    if (this.currentMode === DJ202.modes.hotcue && DJ202.loopSizesCueLoop[control]) {
+        const loopSize = DJ202.loopSizesCueLoop[control];
+        engine.setValue(group, "cue_loop_enabled", true);
+        engine.setValue(group, "cue_loop", true);
+        engine.setValue(group, "beatloop_size", loopSize);
+        return;
+    }
+
+    // ********************** PARAM -/+ SECTION ***************************
+    // Generic case based on currentMode button mapping
+    let button;
+    switch (control) {
+        case 0x4B:
+            if (this.currentMode.param2MinusButton) {
+                button = this.currentMode.param2MinusButton;
+                break;
+            }
+        case 0x43:
+            button = this.currentMode.paramMinusButton;
+            break;
+        case 0x4C:
+            if (this.currentMode.param2PlusButton) {
+                button = this.currentMode.param2PlusButton;
+                break;
+            }
+        case 0x44:
+            button = this.currentMode.paramPlusButton;
+            break;
+    }
+
+    if (button && typeof button.input === "function") {
+        button.input(channel, control, value, status, group);
+    }
+};
+
 
 
 // ********************* LOOP mode - PADs ***********************

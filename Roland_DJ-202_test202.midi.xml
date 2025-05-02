@@ -103,7 +103,7 @@
             </control>
 
             <!-- CUE, PLAY BUTTON -->
-                <control>
+            <control>
                 <group>[Channel1]</group>
                 <key>DJ202.deck[0].play.input</key>
                 <description>DECK 1 PLAY/PAUSE</description>
@@ -119,6 +119,28 @@
                 <description>DECK 1 CUE</description>
                 <status>0x90</status>
                 <midino>0x01</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+            <!-- REVERSE & STUTTER-->
+            <control>
+                <group>[Channel1]</group>
+                <key>DJ202.deck[0].cue.input</key>
+                <description>DECK 1 - Reverse (shifted)</description>
+                <status>0x90</status>
+                <midino>0x05</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel1]</group>
+                <key>DJ202.deck[0].play.input</key>
+                <description>DECK 1 - STUTTER (play/pause shifted)</description>
+                <status>0x90</status>
+                <midino>0x04</midino>
                 <options>
                     <script-binding/>
                 </options>
@@ -419,7 +441,7 @@
             <!-- PARAM -/+ BUTTONS-->
              <control>
                 <group>[Channel1]</group>
-                <key>DJ202.deck[0].handlePad.paramButtonPressed</key>
+                <key>DJ202.paramButtonPressed</key>
                 <description>DECK 1 PARAMETER 1 MINUS</description>
                 <status>0x94</status>
                 <midino>0x43</midino>
@@ -429,7 +451,7 @@
             </control>
             <control>
                 <group>[Channel1]</group>
-                <key>DJ202.deck[0].handlePad.paramButtonPressed</key>
+                <key>DJ202.paramButtonPressed</key>
                 <description>DECK 1 PARAMETER 1 PLUS</description>
                 <status>0x94</status>
                 <midino>0x44</midino>
@@ -439,7 +461,7 @@
             </control>
             <control>
                 <group>[Channel1]</group>
-                <key>DJ202.deck[0].handlePAd.paramButtonPressed</key>
+                <key>DJ202.paramButtonPressed</key>
                 <description>DECK 1 PARAMETER 2 MINUS (SHIFT)</description>
                 <status>0x94</status>
                 <midino>0x4B</midino>
@@ -449,7 +471,7 @@
             </control>
             <control>
                 <group>[Channel1]</group>
-                <key>DJ202.deck[0].handlePad.paramButtonPressed</key>
+                <key>DJ202.paramButtonPressed</key>
                 <description>DECK 1 PARAMETER 2 PLUS (SHIFT)</description>
                 <status>0x94</status>
                 <midino>0x4C</midino>
