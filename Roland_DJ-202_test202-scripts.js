@@ -4,19 +4,14 @@
 
  var DJ202 = {};
 
- /////////////////
- // Tweakables. //
- /////////////////
+  // Tweakables
  
  DJ202.stripSearchScaling = 0.15;
  DJ202.tempoRange = [0.08, 0.16, 0.5];
  DJ202.autoShowFourDecks = false; 
  
- 
 
  // **********  Code Start ********
- 
- 
  DJ202.init = function() {
     
  
@@ -114,7 +109,7 @@
         inKey: "pregain",  // Associa il controllo al volume master
         input: function(value) {
             // Scala il valore MIDI (0-127) a un intervallo tra 0.0 e 1.0
-            const mappedVolume = value / 127 * 5.0;
+            const mappedVolume = value / 127 * 10.0;
     
             // Imposta il volume master in Mixxx
             engine.setValue("[Master]", "gain", mappedVolume);  // Impostazione del volume master
@@ -136,7 +131,7 @@
         inKey: "headMix",  // Associa il controllo a headMix
         input: function(value) {
             // Mappa il valore MIDI (0-127) in un range tra 0.0 e 1.0 (gamma standard per Mixxx)
-            const mappedVolume = value / 127 * 5.0; // Mappa 0-127 a 0.0 - 1.0 per headMix
+            const mappedVolume = value / 127 * 10.0; // Mappa 0-127 a 0.0 - 1.0 per headMix
 
             // Imposta il volume CUE/MASTER con il valore mappato
             engine.setValue("[Master]", "headMix", mappedVolume);
@@ -164,20 +159,14 @@
         components.Pot.prototype.input.apply(this, arguments);  // Applica la logica di input predefinita
     }
 });
-
-
-
-    
-    
    
 
      // *********** EFFECT SECTION ************************
- 
      DJ202.effectUnit = [];
      for (let i = 0; i <= 1; i++) {
          DJ202.effectUnit[i] = new components.EffectUnit([i + 1, i + 3]);
          DJ202.effectUnit[i].sendShifted = true;
-         //DJ202.effectUnit[i].shiftOffset = 0x0B;
+         DJ202.effectUnit[i].shiftOffset = 0x0B;
          DJ202.effectUnit[i].shiftControl = true;
          DJ202.effectUnit[i].enableButtons[1].midi = [0x98 + i, 0x00]; 
          DJ202.effectUnit[i].enableButtons[2].midi = [0x98 + i, 0x01]; 
@@ -192,6 +181,46 @@
          
          DJ202.effectUnit[i].init();
      }
+
+    // Change effect setted
+    DJ202.shiftFxSelect = function(effectIndex) {
+        return function(channel, control, value, status, group) {
+            if (value !== 0x7F) return;
+    
+            let effectUnit = "";
+            let effectSlot = "";
+    
+            switch (group) {
+                case "[Channel1]":
+                    effectUnit = "EffectUnit1";
+                    effectSlot = `Effect${effectIndex}`;
+                    break;
+                case "[Channel2]":
+                    effectUnit = "EffectUnit1";
+                    effectSlot = `Effect${effectIndex + 1}`;
+                    break;
+                case "[Channel3]":
+                    effectUnit = "EffectUnit2";
+                    effectSlot = `Effect${effectIndex}`;
+                    break;
+                case "[Channel4]":
+                    effectUnit = "EffectUnit2";
+                    effectSlot = `Effect${effectIndex + 1}`;
+                    break;
+                default:
+                    return;
+            }
+    
+            const effectGroup = `[EffectRack1_${effectUnit}_${effectSlot}]`;
+            engine.setValue(effectGroup, "next_effect", 1);
+        };
+    };
+    
+    // Assegna le funzioni ai rispettivi FX SELECT
+    DJ202.shiftFx1 = DJ202.shiftFxSelect(1);
+    DJ202.shiftFx2 = DJ202.shiftFxSelect(2);
+    DJ202.shiftFx3 = DJ202.shiftFxSelect(3); 
+    
  
      engine.makeConnection("[Channel3]", "track_loaded", DJ202.autoShowDecks);
      engine.makeConnection("[Channel4]", "track_loaded", DJ202.autoShowDecks);
@@ -679,16 +708,6 @@
             }
           };
         },
-      
-        shift: function () {
-          this.inKey = 'reverse';
-          this.input = function (channel, control, value, status, group) {
-            components.Button.prototype.input.apply(this, arguments);
-            if (!value) {
-              this.trigger();
-            }
-          };
-        }
       });
 
     // *********  REVERSE & STUTTER (CUE and PLAY/PAUSE)

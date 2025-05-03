@@ -188,9 +188,9 @@
                 </options>
             </control>
             <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].enableButtons[1].input</key>
-                <description>FX 1 FX SELECT 1</description>
+                <group>[Channel1]</group>
+                <key>DJ202.shiftFx1</key>
+                <description>Deck 1 - Shift + FX1 (next effect)</description>
                 <status>0x98</status>
                 <midino>0x0B</midino>
                 <options>
@@ -198,9 +198,9 @@
                 </options>
             </control>
             <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].enableButtons[2].input</key>
-                <description>FX 1 FX SELECT 2</description>
+                <group>[Channel1]</group>
+                <key>DJ202.shiftFx2</key>
+                <description>Deck 1 - Shift + FX2 (next effect)</description>
                 <status>0x98</status>
                 <midino>0x0C</midino>
                 <options>
@@ -208,9 +208,9 @@
                 </options>
             </control>
             <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].enableButtons[3].input</key>
-                <description>FX 1 FX SELECT 3</description>
+                <group>[Channel1]</group>
+                <key>DJ202.shiftFx3</key>
+                <description>Deck 1 - Shift + FX3 (next effect)</description>
                 <status>0x98</status>
                 <midino>0x0D</midino>
                 <options>
