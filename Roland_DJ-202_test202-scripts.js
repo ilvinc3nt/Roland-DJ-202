@@ -28,11 +28,9 @@
     DJ202.sequencer = new DJ202.Sequencer();
 
 
-
     //LOAD BUTTON TO DECK 1,2,3,4
  
  DJ202.leftLoadTrackButton = new components.Button({
- 
      group: "[Channel1]",
      midi: [0x9F, 0x02],
      unshift: function() {
@@ -57,10 +55,14 @@
      },
      });
       
-     // Aggiorna periodicamente lo stato del LED
+     // Aggiorna periodicamente lo stato del LED sul DECK1 e DECK3
      engine.makeConnection("[Channel1]", "track_samples", function() {
      DJ202.leftLoadTrackButton.updateLed();
      });    
+     engine.makeConnection("[Channel3]", "track_samples", function() {
+     DJ202.leftLoadTrackButton.updateLed();
+     });
+
      
      DJ202.deck3Button = new DJ202.DeckToggleButton({
      midi: [0x90, 0x08],
@@ -70,7 +72,7 @@
         
      DJ202.rightLoadTrackButton = new components.Button({
      group: "[Channel2]",
-     midi: [0x9F, 0x02],
+     midi: [0x9F, 0x03],
      unshift: function() {
      this.inKey = "LoadSelectedTrack";
      },
@@ -91,8 +93,16 @@
      // Aggiorna lo stato del LED
      this.send(hasTrack ? this.on : this.off);
      },
-     
      });
+
+     // Aggiorna periodicamente lo stato del LED sul DECK2 e DECK4 
+     engine.makeConnection("[Channel2]", "track_samples", function() {
+     DJ202.rightLoadTrackButton.updateLed();
+     }); 
+     engine.makeConnection("[Channel4]", "track_samples", function() {
+     DJ202.rightLoadTrackButton.updateLed();
+     });
+
      
      DJ202.deck4Button = new DJ202.DeckToggleButton({
      midi: [0x91, 0x08],
@@ -122,7 +132,6 @@
             components.Pot.prototype.input.apply(this, arguments);  // Applica la logica di input predefinita
         }
     });
-    
     
     //CUE/MASTER
     DJ202.cueMasterVolume = new components.Pot({
@@ -160,7 +169,6 @@
     }
 });
    
-
      // *********** EFFECT SECTION ************************
      DJ202.effectUnit = [];
      for (let i = 0; i <= 1; i++) {
@@ -343,7 +351,7 @@
          };
      },
  
-     input: function(channel, control, value, status, _group) {
+     input: function(channel, control, value, status, group) {
          switch (status) {
              case 0xBF: { // Rotazione del knob
                  const rotateValue = (value === 127) ? -1 : ((value === 1) ? 1 : 0);
@@ -351,13 +359,13 @@
                  break;
              }
              case 0x9F: // Pressione del knob
-                 this.onButtonEvent(value);
+                 this.onButtonEvent(value)
+                 script.triggerControl(group, this.isShifted ? 'MoveFocusBackward'
+                    : 'MoveFocusForward');
                  break;
          }
      },
  });
- 
- 
  
      DJ202.sortLibrary = function(channel, control, value, _status, _group) {
      if (value === 0) {
@@ -382,9 +390,7 @@
      engine.setValue("[Library]", "sort_column_toggle", sortColumn);
      
      };
- 
- // ************** FINE BROWSE *************************************
- 
+  
  // ============================= CROSSFADER =================================
  DJ202.crossfader = new components.Pot({
      midi: [0xBF, 0x08],
@@ -423,14 +429,27 @@
      // 0x00 is ON, 0x01 is OFF
      engine.setValue("[Mixer Profile]", "xFaderReverse", (value === 0x00) ? 1 : 0);
  };
- 
+
+ // ************************* INPUT/OUTPUT SECTION ********************************************
+ DJ202.setChannelInput = function(channel, control, value, _status, _group) {
+    const number = (channel === 0x00) ? 0 : 1;
+    const channelgroup = "[Channel" + (number + 1) + "]";
+    switch (value) {
+    case 0x00:  // PC
+        engine.setValue(channelgroup, "passthrough", 0);
+        break;
+    case 0x01:  // LINE
+    case 0x02:  // PHONO
+        engine.setValue(channelgroup, "passthrough", 1);
+        break;
+    }
+};
+
  
  // ***************** INIZIO FUNZIONI: Sync, Tempo, Jog, Mixer, ecc... *****************
  DJ202.Deck = function(deckNumbers, offset) {
      components.Deck.call(this, deckNumbers);
      
- 
- 
      // ============================= JOG WHEELS =================================
      this.wheelTouch = function(channel, control, value, _status, _group) {
          if (value === 0x7F && !this.isShifted) {
@@ -535,9 +554,7 @@
         );
     };
     
-
-
-     // Pulsante SHIFT
+     // ******** Pulsante SHIFT
      this.shiftButton = new components.Button({
         midi: [0x90 + offset, 0x00], // Assumendo che SHIFT abbia Control 0x00
         input: function(channel, control, value, status, group) {
@@ -545,9 +562,6 @@
             console.log(`SHIFT ${DJ202.isShiftActive ? "attivato" : "disattivato"}`);
         }
     });
-
-
-
   
      // ============================= SYNC BUTTON ==========================
      this.sync = new components.Button({
@@ -734,7 +748,6 @@
         }
     });
       
- 
      // =============================== MIXER ZONE ====================================
      this.pregain = new components.Pot({
          midi: [0xB0 + offset, 0x16],
@@ -801,11 +814,7 @@
     // Implementa la logica per impostare il volume delle cuffie nel tuo sistema
     console.log(`Volume cuffie impostato a: ${volume * 100}%`);
 }
- 
- ///////FINEEEEEE
- 
- 
- 
+  
  DJ202.Deck.prototype = Object.create(components.Deck.prototype);
  
  
@@ -894,7 +903,6 @@ DJ202.SlipModeButton.prototype.shift = function() {
     this.trigger();
  };
  
- 
 //************************ Button: Hotcue Loop, Sequencer, Sampler **************************
  //**************************** LED ON PADS  ***********************************/ 
 DJ202.PadsColor = {
@@ -903,9 +911,26 @@ DJ202.PadsColor = {
     RED: 0x01,
 };
 
-DJ202.setPadLed = function(control, color) {
-    midi.sendShortMsg(0x94, control, color); // 0x94 è lo status per il canale 1, NOTE ON
+DJ202.getStatusByteForGroup = function(group) {
+    switch (group) {
+        case "[Channel1]":
+            return 0x94;
+        case "[Channel2]":
+            return 0x95;
+        case "[Channel3]":
+            return 0x96;
+        case "[Channel4]":
+            return 0x97;
+        default:
+            return 0x94; // Fallback su Channel1
+    }
 };
+
+DJ202.setPadLed = function(control, color, group) {
+    const status = DJ202.getStatusByteForGroup(group);
+    midi.sendShortMsg(status, control, color);
+};
+
 
 
  //**************************** TAP ON PADS  ***********************************/
@@ -950,9 +975,9 @@ DJ202.updateHotcuePadLed = function(control, group) {
     const hotcueSet = engine.getValue(group, `hotcue_${index + 1}_enabled`);
 
     if (hotcueSet) {
-        DJ202.setPadLed(control, DJ202.PadsColor.YELLOW); // Hotcue presente
+        DJ202.setPadLed(control, DJ202.PadsColor.YELLOW, group);
     } else {
-        DJ202.setPadLed(control, DJ202.PadsColor.OFF); // Nessun hotcue
+        DJ202.setPadLed(control, DJ202.PadsColor.OFF, group);
     }
 };
 
@@ -967,61 +992,6 @@ DJ202.handleHotcueDelete = function(control, group) {
     engine.setValue(group, `hotcue_${index + 1}_clear`, true);
     DJ202.updateHotcuePadLed(control - 0x08, group); // Corrisponde al pad normale (0x01 - 0x08)
 };
-
-
- // ************* PARAM -/+ for CUE LOPP  ********************
- DJ202.loopSizesCueLoop = {
-    0x43: 1,
-    0x44: 2,
-    0x4B: 4,
-    0x4C: 8,
-};
-
-DJ202.paramButtonPressed = function(channel, control, value, status, group) {
-    const isPressed = value === 0x7F;
-    if (!isPressed) return;
-
-    if (!this.currentMode) {
-        return;
-    }
-
-    // Special case for cue loop in HOTCUE mode
-    if (this.currentMode === DJ202.modes.hotcue && DJ202.loopSizesCueLoop[control]) {
-        const loopSize = DJ202.loopSizesCueLoop[control];
-        engine.setValue(group, "cue_loop_enabled", true);
-        engine.setValue(group, "cue_loop", true);
-        engine.setValue(group, "beatloop_size", loopSize);
-        return;
-    }
-
-    // ********************** PARAM -/+ SECTION ***************************
-    // Generic case based on currentMode button mapping
-    let button;
-    switch (control) {
-        case 0x4B:
-            if (this.currentMode.param2MinusButton) {
-                button = this.currentMode.param2MinusButton;
-                break;
-            }
-        case 0x43:
-            button = this.currentMode.paramMinusButton;
-            break;
-        case 0x4C:
-            if (this.currentMode.param2PlusButton) {
-                button = this.currentMode.param2PlusButton;
-                break;
-            }
-        case 0x44:
-            button = this.currentMode.paramPlusButton;
-            break;
-    }
-
-    if (button && typeof button.input === "function") {
-        button.input(channel, control, value, status, group);
-    }
-};
-
-
 
 // ********************* LOOP mode - PADs ***********************
 // Mappa delle dimensioni del loop per ogni PAD
@@ -1070,8 +1040,6 @@ DJ202.handleLoop = function(control, group) {
         console.log(`Loop disattivato su PAD ${control}`);
     }
 };
-
-
 
 // ********************* SAMPLER mode - PADs ***********************
 DJ202.initSamplerLeds = function() {
@@ -1133,12 +1101,62 @@ DJ202.sampler = {
 
 // ************************** SECONDARY FUNCTIONS (CueLoop, Roll, ecc...) *******************
 // ********************* CUE LOOP mode - PADs ***********************
+// ************* PARAM -/+ used for CUE LOOP  (workaround)********************
+ DJ202.loopSizesCueLoop = {
+    0x43: 1,
+    0x44: 2,
+    0x4B: 4,
+    0x4C: 8,
+};
 
+DJ202.paramButtonPressed = function(channel, control, value, status, group) {
+    const isPressed = value === 0x7F;
+    if (!isPressed) return;
 
+    if (!this.currentMode) {
+        return;
+    }
 
+    // Special case for cue loop in HOTCUE mode
+    if (this.currentMode === DJ202.handleHotcue && DJ202.loopSizesCueLoop[control]) {
+        const loopSize = DJ202.loopSizesCueLoop[control];
+        engine.setValue(group, "cue_loop_enabled", true);
+        engine.setValue(group, "gotoandloop", true);
+        engine.setValue(group, "hotcue_" + loopSize + "_gotoandloop");
+        return;
+    }
 
+      // ********************** PARAM -/+ SECTION ***************************
+   // Generic case based on currentMode button mapping
+   let button;
+   switch (control) {
+       case 0x4B:
+           if (this.currentMode.param2MinusButton) {
+               button = this.currentMode.param2MinusButton;
+               break;
+           }
+       case 0x43:
+           button = this.currentMode.paramMinusButton;
+           break;
+       case 0x4C:
+           if (this.currentMode.param2PlusButton) {
+               button = this.currentMode.param2PlusButton;
+               break;
+           }
+       case 0x44:
+           button = this.currentMode.paramPlusButton;
+           break;
+   }
+
+   if (button && typeof button.input === "function") {
+       button.input(channel, control, value, status, group);
+   }
+};
 
 // ********************* ROLL mode - PADs ***********************
+
+
+
 DJ202.rollSizes = {
     0x19: 1,   // 1 beat
     0x1A: 2,   // 2 beat
@@ -1150,14 +1168,14 @@ DJ202.handleRoll = function(control, group, isPressed) {
     const inKeyMap = {
         0x1D: 'loop_in',
         0x1E: 'loop_out',
-        0x1F: 'reloop_andstop',
+        0x1F: 'loop_remove',
         0x20: 'reloop_toggle',
     };
 
     const outKeyMap = {
         0x1D: 'loop_in',
         0x1E: 'loop_end_position',
-        0x1F: 'reloop_andstop',
+        0x1F: 'loop_remove',
         0x20: 'reloop_enabled',
     };
 
@@ -1168,7 +1186,7 @@ DJ202.handleRoll = function(control, group, isPressed) {
         if (isPressed) {
             // Attiva il loop temporaneo
             engine.setValue(group, "beatlooproll_" + loopSize + "_activate", true);
-            DJ202.setPadLed(control, DJ202.PadsColor.YELLOW); // Giallo acceso
+            DJ202.setPadLed(control, DJ202.PadsColor.RED); // Rosso acceso
             print(`ROLL ATTIVATO: PAD ${control} → ${loopSize} beat`);
         } else {
             // Disattiva il loop temporaneo al rilascio
@@ -1182,18 +1200,19 @@ DJ202.handleRoll = function(control, group, isPressed) {
     }
 
     // --- PADs 0x1D–0x20 = loop_in, loop_out, ecc. ---
-    if (inKeyMap[control]) {
-        if (isPressed) {
-            engine.setValue(group, inKeyMap[control], 1);
-            DJ202.setPadLed(control, DJ202.PadsColor.RED);
-            print(`AZIONE ATTIVA: ${inKeyMap[control]} su PAD ${control}`);
-        } else {
-            engine.setValue(group, inKeyMap[control], 0);
-            engine.setValue(group, outKeyMap[control], 0);
-            DJ202.setPadLed(control, DJ202.PadsColor.OFF);
-            print(`AZIONE DISATTIVA: ${inKeyMap[control]} su PAD ${control}`);
-        }
+    else if (inKeyMap.hasOwnProperty(control)) {
+    if (isPressed) {
+        engine.setValue(group, inKeyMap[control], 1);
+        DJ202.setPadLed(control, DJ202.PadsColor.RED);
+        print(`AZIONE ATTIVA: ${inKeyMap[control]} su PAD ${control}`);
+    } else {
+       
+        // Lascia il LED acceso oppure accendilo solo in press
+        DJ202.setPadLed(control, DJ202.PadsColor.RED);
+        print(`AZIONE: rilascio PAD ${control}, ma LED resta acceso`);
     }
+}
+
 };
 
 // ********************* SLICER mode - PADs ***********************
@@ -1250,9 +1269,6 @@ DJ202.Sequencer = function() {
         // Accendi il LED SYNC
         midi.sendShortMsg(0x9F, 0x53, 0x7F);
     };
-    
-
-    
     
     this.cueButton = new components.Button({
         group: "[Channel1]",

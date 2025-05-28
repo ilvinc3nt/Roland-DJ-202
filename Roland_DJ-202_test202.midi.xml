@@ -37,9 +37,74 @@
                     <script-binding/>
                 </options>
             </control>
+            <!-- Slider Tempo Deck 3 -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].tempoFader.inputMSB</key>
+                <description>DECK 3 TEMPO FADER (MSB)</description>
+                <status>0xB2</status>
+                <midino>0x09</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].tempoFader.inputLSB</key>
+                <description>DECK 3 TEMPO FADER (LSB)</description>
+                <status>0xB2</status>
+                <midino>0x3B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <!-- ******Right side, Deck 2****** -->
+            
+            <!-- Slider Tempo Deck 2 -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].tempoFader.inputMSB</key>
+                <description>DECK 2 TEMPO FADER (MSB)</description>
+                <status>0xB1</status>
+                <midino>0x09</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].tempoFader.inputLSB</key>
+                <description>DECK 2 TEMPO FADER (LSB)</description>
+                <status>0xB1</status>
+                <midino>0x3B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Slider Tempo Deck 4 -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].tempoFader.inputMSB</key>
+                <description>DECK 4 TEMPO FADER (MSB)</description>
+                <status>0xB3</status>
+                <midino>0x09</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[0].tempoFader.inputLSB</key>
+                <description>DECK 4 TEMPO FADER (LSB)</description>
+                <status>0xB3</status>
+                <midino>0x3B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
              <!-- Deck 3/4 ENABLE Buttons -->
             <control>
-                <group>[Channel1]</group>
+                <group>[Channel3]</group>
                 <key>DJ202.deck3Button.input</key>
                 <description>DECK 3 ENABLE</description>
                 <status>0x90</status>
@@ -59,6 +124,7 @@
                 </options>
             </control>
             <!-- KEY LOCK -->
+            <!-- Deck 1 -->
              <control>
                 <group>[Channel1]</group>
                 <key>DJ202.deck[0].keylock.input</key>
@@ -79,8 +145,72 @@
                     <script-binding/>
                 </options>
             </control>
+             <!-- Deck 2-->
+             <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].keylock.input</key>
+                <description>DECK 2 KEY LOCK</description>
+                <status>0x91</status>
+                <midino>0x0D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].keylock.input</key>
+                <description>DECK 2 TEMPO RANGE</description>
+                <status>0x91</status>
+                <midino>0x0E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <!-- Deck 3-->
+             <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].keylock.input</key>
+                <description>DECK 3 KEY LOCK</description>
+                <status>0x92</status>
+                <midino>0x0D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].keylock.input</key>
+                <description>DECK 3 TEMPO RANGE</description>
+                <status>0x92</status>
+                <midino>0x0E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <!-- Deck 4-->
+             <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].keylock.input</key>
+                <description>DECK 4 KEY LOCK</description>
+                <status>0x93</status>
+                <midino>0x0D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].keylock.input</key>
+                <description>DECK 4 TEMPO RANGE</description>
+                <status>0x93</status>
+                <midino>0x0E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
             
-                 <!-- SYNC BUTTON Deck 1 -->
+                 <!-- SYNC BUTTON -->
+                 <!-- Deck 1 -->
             <control>
                 <group>[Channel1]</group>
                 <key>DJ202.deck[0].sync.input</key>
@@ -101,8 +231,72 @@
                     <script-binding/>
                 </options>
             </control>
+              <!-- Deck 2 -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].sync.input</key>
+                <description>DECK 2 SYNC</description>
+                <status>0x91</status>
+                <midino>0x02</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].sync.input</key>
+                <description>DECK 2 SYNC OFF</description>
+                <status>0x91</status>
+                <midino>0x03</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+              <!-- Deck 3 -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].sync.input</key>
+                <description>DECK 3 SYNC</description>
+                <status>0x92</status>
+                <midino>0x02</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].sync.input</key>
+                <description>DECK 3 SYNC OFF</description>
+                <status>0x92</status>
+                <midino>0x03</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+              <!-- Deck 4 -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].sync.input</key>
+                <description>DECK 4 SYNC</description>
+                <status>0x93</status>
+                <midino>0x02</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].sync.input</key>
+                <description>DECK 4 SYNC OFF</description>
+                <status>0x93</status>
+                <midino>0x03</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
 
             <!-- CUE, PLAY BUTTON -->
+            <!-- Deck 1 -->
             <control>
                 <group>[Channel1]</group>
                 <key>DJ202.deck[0].play.input</key>
@@ -123,8 +317,72 @@
                     <script-binding/>
                 </options>
             </control>
+             <!-- Deck 2 -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].play.input</key>
+                <description>DECK 2 PLAY/PAUSE</description>
+                <status>0x91</status>
+                <midino>0x00</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].cue.input</key>
+                <description>DECK 2 CUE</description>
+                <status>0x91</status>
+                <midino>0x01</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <!-- Deck 3 -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].play.input</key>
+                <description>DECK 3 PLAY/PAUSE</description>
+                <status>0x92</status>
+                <midino>0x00</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].cue.input</key>
+                <description>DECK 3 CUE</description>
+                <status>0x92</status>
+                <midino>0x01</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <!-- Deck 4 -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].play.input</key>
+                <description>DECK 4 PLAY/PAUSE</description>
+                <status>0x93</status>
+                <midino>0x00</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].cue.input</key>
+                <description>DECK 4 CUE</description>
+                <status>0x93</status>
+                <midino>0x01</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
 
             <!-- REVERSE & STUTTER-->
+            <!-- Deck 1 -->
             <control>
                 <group>[Channel1]</group>
                 <key>DJ202.deck[0].cue.input</key>
@@ -145,12 +403,76 @@
                     <script-binding/>
                 </options>
             </control>
+            <!-- Deck 2 -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].cue.input</key>
+                <description>DECK 2 - Reverse (shifted)</description>
+                <status>0x91</status>
+                <midino>0x05</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].play.input</key>
+                <description>DECK 2 - STUTTER (play/pause shifted)</description>
+                <status>0x91</status>
+                <midino>0x04</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 3 -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].cue.input</key>
+                <description>DECK 3 - Reverse (shifted)</description>
+                <status>0x92</status>
+                <midino>0x05</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].play.input</key>
+                <description>DECK 3 - STUTTER (play/pause shifted)</description>
+                <status>0x92</status>
+                <midino>0x04</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 4 -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].cue.input</key>
+                <description>DECK 4 - Reverse (shifted)</description>
+                <status>0x93</status>
+                <midino>0x05</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].play.input</key>
+                <description>DECK 4 - STUTTER (play/pause shifted)</description>
+                <status>0x93</status>
+                <midino>0x04</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
 
-            <!-- EFFECTS 1,2,3 Deck 1 -->
+            <!-- EFFECTS 1,2,3 on DECKs -->
+            <!-- Deck 1 -->
              <control>
                 <group>[Master]</group>
                 <key>DJ202.effectUnit[0].enableButtons[1].input</key>
-                <description>FX 1 ON 1</description>
+                <description>FX 1 ON Deck 1</description>
                 <status>0x98</status>
                 <midino>0x00</midino>
                 <options>
@@ -160,7 +482,7 @@
             <control>
                 <group>[Master]</group>
                 <key>DJ202.effectUnit[0].enableButtons[2].input</key>
-                <description>FX 1 ON 2</description>
+                <description>FX 2 ON Deck 1</description>
                 <status>0x98</status>
                 <midino>0x01</midino>
                 <options>
@@ -170,7 +492,7 @@
             <control>
                 <group>[Master]</group>
                 <key>DJ202.effectUnit[0].enableButtons[3].input</key>
-                <description>FX 1 ON 3</description>
+                <description>FX 3 ON Deck 1</description>
                 <status>0x98</status>
                 <midino>0x02</midino>
                 <options>
@@ -258,38 +580,123 @@
                     <script-binding/>
                 </options>
             </control>
-            <!-- 
+            <!-- Deck 2 -->
+              <control>
+                <group>[Master]</group>
+                <key>DJ202.effectUnit[1].enableButtons[1].input</key>
+                <description>FX 1 ON Deck 2</description>
+                <status>0x99</status>
+                <midino>0x00</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
             <control>
                 <group>[Master]</group>
-                <key>DJ202.effectUnit[0].knobs[1].input</key>
-                <description>FX 1 KNOB 1 (shifted)</description>
-                <status>0xB8</status>
+                <key>DJ202.effectUnit[1].enableButtons[2].input</key>
+                <description>FX 2 ON Deck 1</description>
+                <status>0x99</status>
+                <midino>0x01</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Master]</group>
+                <key>DJ202.effectUnit[1].enableButtons[3].input</key>
+                <description>FX 3 ON Deck 1</description>
+                <status>0x99</status>
+                <midino>0x02</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Master]</group>
+                <key>DJ202.effectUnit[0].effectFocusButton.input</key>
+                <description>FX TAP ON Deck 2</description>
+                <status>0x99</status>
+                <midino>0x04</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.shiftFx1</key>
+                <description>Deck 2 - Shift + FX1 (next effect)</description>
+                <status>0x99</status>
                 <midino>0x0B</midino>
                 <options>
                     <script-binding/>
                 </options>
             </control>
             <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].knobs[2].input</key>
-                <description>FX 1 KNOB 2 (shifted)</description>
-                <status>0xB8</status>
+                <group>[Channel2]</group>
+                <key>DJ202.shiftFx2</key>
+                <description>Deck 2 - Shift + FX2 (next effect)</description>
+                <status>0x99</status>
                 <midino>0x0C</midino>
                 <options>
                     <script-binding/>
                 </options>
             </control>
             <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].knobs[3].input</key>
-                <description>FX 1 KNOB 3 (shifted)</description>
-                <status>0xB8</status>
+                <group>[Channel2]</group>
+                <key>DJ202.shiftFx3</key>
+                <description>Deck 2 - Shift + FX3 (next effect)</description>
+                <status>0x99</status>
                 <midino>0x0D</midino>
                 <options>
                     <script-binding/>
                 </options>
             </control>
-            -->
+            <control>
+                <group>[Master]</group>
+                <key>DJ202.effectUnit[1].effectFocusButton.input</key>
+                <description>FX 1 FX MODE</description>
+                <status>0x99</status>
+                <midino>0x0A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- NEEDS all 3 knobs active to rotate theme at the same time (knobs[1],[2],[3]) -->
+            <control>
+                <group>[Master]</group>
+                <key>DJ202.effectUnit[1].knobs[1].input</key>
+                <description>FX 1 KNOB 1</description>
+                <status>0xB9</status>
+                <midino>0x00</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Master]</group>
+                <key>DJ202.effectUnit[1].knobs[2].input</key>
+                <description>FX 1 KNOB 2</description>
+                <status>0xB9</status>
+                <midino>0x01</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Master]</group>
+                <key>DJ202.effectUnit[1].knobs[3].input</key>
+                <description>FX 1 KNOB 3</description>
+                <status>0xB9</status>
+                <midino>0x02</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 3 -->
+            <!-- Deck 4 -->
+            
+
+            <!-- BEATS sul KNOB effectti *********** controllare!!!  -->
             <control>
                 <group>[Master]</group>
                 <key>DJ202.effectUnit[0].dryWetKnob.input</key>
@@ -371,9 +778,73 @@
                     <script-binding/>
                 </options>
             </control>
+            <!-- JOG WHEELS Deck 2-->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].wheelTouch</key>
+                <description>DECK 2 JOG WHEEL TOUCH</description>
+                <status>0x91</status>
+                <midino>0x06</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].wheelTurn</key>
+                <description>DECK 2 JOG WHEEL TURN</description>
+                <status>0xB1</status>
+                <midino>0x06</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- JOG WHEELS Deck 3-->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].wheelTouch</key>
+                <description>DECK 3 JOG WHEEL TOUCH</description>
+                <status>0x92</status>
+                <midino>0x06</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].wheelTurn</key>
+                <description>DECK 3 JOG WHEEL TURN</description>
+                <status>0xB2</status>
+                <midino>0x06</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- JOG WHEELS Deck 4-->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].wheelTouch</key>
+                <description>DECK 4 JOG WHEEL TOUCH</description>
+                <status>0x93</status>
+                <midino>0x06</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel1]</group>
+                <key>DJ202.deck[3].wheelTurn</key>
+                <description>DECK 1 JOG WHEEL TURN</description>
+                <status>0xB3</status>
+                <midino>0x06</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
             <!-- fine Jog Wheels-->
             
             <!-- Slip Button-->
+            <!-- Deck 1 -->
             <control>
                 <group>[Channel1]</group>
                 <key>DJ202.deck[0].slipModeButton.input</key>
@@ -394,8 +865,72 @@
                     <script-binding/>
                 </options>
             </control>
+            <!-- Deck 2 -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].slipModeButton.input</key>
+                <description>DECK 2 VINYL MODE</description>
+                <status>0x91</status>
+                <midino>0x07</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].slipModeButton.input</key>
+                <description>DECK 1 SLIP MODE</description>
+                <status>0x91</status>
+                <midino>0x0F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 3 -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].slipModeButton.input</key>
+                <description>DECK 3 VINYL MODE</description>
+                <status>0x92</status>
+                <midino>0x07</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].slipModeButton.input</key>
+                <description>DECK 1 SLIP MODE</description>
+                <status>0x92</status>
+                <midino>0x0F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 4 -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].slipModeButton.input</key>
+                <description>DECK 4 VINYL MODE</description>
+                <status>0x93</status>
+                <midino>0x07</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].slipModeButton.input</key>
+                <description>DECK 4 SLIP MODE</description>
+                <status>0x93</status>
+                <midino>0x0F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
 
-            <!-- Volume Control Deck 1-->
+            <!-- Volume Control -->
+            <!-- Deck 1 -->
             <control>
                 <group>[Channel1]</group>
                 <key>DJ202.deck[0].volume.inputMSB</key>
@@ -416,18 +951,73 @@
                     <script-binding/>
                 </options>
             </control>
-             <!-- FINE Volume Control Deck 1-->
+            <!-- Deck 2 -->
             <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].dryWetKnob.input</key>
-                <description>FX 1 BEATS KNOB PRESS</description>
-                <status>0x98</status>
-                <midino>0x03</midino>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].volume.inputMSB</key>
+                <description>DECK 2 VOLUME (MSB)</description>
+                <status>0xB1</status>
+                <midino>0x1C</midino>
                 <options>
                     <script-binding/>
                 </options>
             </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].volume.inputLSB</key>
+                <description>DECK 2 VOLUME (MSB)</description>
+                <status>0xB1</status>
+                <midino>0x3A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 3 -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].volume.inputMSB</key>
+                <description>DECK 3 VOLUME (MSB)</description>
+                <status>0xB2</status>
+                <midino>0x1C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].volume.inputLSB</key>
+                <description>DECK 3 VOLUME (MSB)</description>
+                <status>0xB2</status>
+                <midino>0x3A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 4 -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].volume.inputMSB</key>
+                <description>DECK 4 VOLUME (MSB)</description>
+                <status>0xB3</status>
+                <midino>0x1C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].volume.inputLSB</key>
+                <description>DECK 4 VOLUME (MSB)</description>
+                <status>0xB3</status>
+                <midino>0x3A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <!-- FINE Volume Control -->
+           
             <!-- SHIFT BUTTON -->
+            <!-- Deck 1 -->            
           <control>
                 <group>[Channel1]</group>
                 <key>DJ202.shiftButton</key>
@@ -438,7 +1028,41 @@
                     <script-binding/>
                 </options>
             </control>
+            <!-- Deck 2 -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.shiftButton</key>
+                <description>SHIFT</description>
+                <status>0x__</status>
+                <midino>0x00</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 3 -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.shiftButton</key>
+                <description>SHIFT</description>
+                <status>0x__</status>
+                <midino>0x00</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 4 -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.shiftButton</key>
+                <description>SHIFT</description>
+                <status>0x__</status>
+                <midino>0x00</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
             <!-- PARAM -/+ BUTTONS-->
+            <!-- Deck 1 -->
              <control>
                 <group>[Channel1]</group>
                 <key>DJ202.paramButtonPressed</key>
@@ -479,12 +1103,134 @@
                     <script-binding/>
                 </options>
             </control>
+            <!-- Deck 2 -->
+             <control>
+                <group>[Channel2]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 2 PARAMETER 1 MINUS</description>
+                <status>0x95</status>
+                <midino>0x43</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 2 PARAMETER 1 PLUS</description>
+                <status>0x95</status>
+                <midino>0x44</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 2 PARAMETER 2 MINUS (SHIFT)</description>
+                <status>0x95</status>
+                <midino>0x4B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 2 PARAMETER 2 PLUS (SHIFT)</description>
+                <status>0x95</status>
+                <midino>0x4C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 3 -->
+             <control>
+                <group>[Channel3]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 3 PARAMETER 1 MINUS</description>
+                <status>0x96</status>
+                <midino>0x43</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 3 PARAMETER 1 PLUS</description>
+                <status>0x96</status>
+                <midino>0x44</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 3 PARAMETER 2 MINUS (SHIFT)</description>
+                <status>0x96</status>
+                <midino>0x4B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 3 PARAMETER 2 PLUS (SHIFT)</description>
+                <status>0x96</status>
+                <midino>0x4C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <!-- Deck 4 -->
+             <control>
+                <group>[Channel4]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 4 PARAMETER 1 MINUS</description>
+                <status>0x97</status>
+                <midino>0x43</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 4 PARAMETER 1 PLUS</description>
+                <status>0x97</status>
+                <midino>0x44</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 4 PARAMETER 2 MINUS (SHIFT)</description>
+                <status>0x97</status>
+                <midino>0x4B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.paramButtonPressed</key>
+                <description>DECK 4 PARAMETER 2 PLUS (SHIFT)</description>
+                <status>0x97</status>
+                <midino>0x4C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
 
             <!--     ///// FUNZIONI PAD & PADS SECTION ////     -->
     
               
             <!-- Deck 1, HOT CUE Pads -->
-
             <control>
                 <group>[Channel1]</group>
                 <key>DJ202.handlePad</key>
@@ -648,7 +1394,6 @@
                 </options>
             </control>
             
-
             <!-- Deck 1, LOOP Pads -->
             <control>
                 <group>[Channel1]</group>
@@ -898,7 +1643,340 @@
                     <script-binding/>
                 </options>
             </control>
-            
+
+            <!-- DECK 2 -->
+            <!-- Deck 2, HOT CUE Pads -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD1 (set)</description>
+                <status>0x95</status>
+                <midino>0x01</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD2 (set)</description>
+                <status>0x95</status>
+                <midino>0x02</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD3 (set)</description>
+                <status>0x95</status>
+                <midino>0x03</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD4 (set)</description>
+                <status>0x95</status>
+                <midino>0x04</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD5 (set)</description>
+                <status>0x95</status>
+                <midino>0x05</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD6 (set)</description>
+                <status>0x95</status>
+                <midino>0x06</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD7 (set)</description>
+                <status>0x95</status>
+                <midino>0x07</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD8 (set)</description>
+                <status>0x95</status>
+                <midino>0x08</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+                     
+            <!-- Deck 2, HOT CUE Pads (shifted) -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD1 (delete)</description>
+                <status>0x95</status>
+                <midino>0x09</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD2 (delete)</description>
+                <status>0x95</status>
+                <midino>0x0A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD3 (delete)</description>
+                <status>0x95</status>
+                <midino>0x0B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD4 (delete)</description>
+                <status>0x95</status>
+                <midino>0x0C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD5 (delete)</description>
+                <status>0x95</status>
+                <midino>0x0D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD6 (delete)</description>
+                <status>0x95</status>
+                <midino>0x0E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD7 (delete)</description>
+                <status>0x95</status>
+                <midino>0x0F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 2 PAD8 (delete)</description>
+                <status>0x95</status>
+                <midino>0x10</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+            <!-- Deck 2, LOOP Pads -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 2 LOOP 1</description>
+                <status>0x95</status>
+                <midino>0x11</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 2 LOOP 2</description>
+                <status>0x95</status>
+                <midino>0x12</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 3</description>
+                <status>0x95</status>
+                <midino>0x13</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 4</description>
+                <status>0x95</status>
+                <midino>0x14</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 5</description>
+                <status>0x95</status>
+                <midino>0x15</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 6</description>
+                <status>0x95</status>
+                <midino>0x16</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 1 LOOP 7</description>
+                <status>0x95</status>
+                <midino>0x17</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 8</description>
+                <status>0x95</status>
+                <midino>0x18</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+             <!-- Deck 2, ROLL Pads  -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 2 - ROLL (loop 1 battuta)</description>
+                <status>0x95</status>
+                <midino>0x19</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 2 - ROOL (loop 2 battute)</description>
+                <status>0x95</status>
+                <midino>0x1A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 - ROLL (loop 4 battute)</description>
+                <status>0x95</status>
+                <midino>0x1B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 2 - ROLL (loop 8 battute)</description>
+                <status>0x95</status>
+                <midino>0x1C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 2 - ROLL (loop in)</description>
+                <status>0x95</status>
+                <midino>0x1D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 2 - ROLL (loop out)</description>
+                <status>0x95</status>
+                <midino>0x1E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 2 - ROLL (loop exit)</description>
+                <status>0x95</status>
+                <midino>0x1F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 2 - ROLL (loop no/off)</description>
+                <status>0x95</status>
+                <midino>0x20</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+
+
+
+
 
             <!-- CENTRAL COMMAND (knob, button, ecc...) -->
               <!-- LOAD BUTTON (track) Deck 1-->
@@ -908,6 +1986,39 @@
                 <description>DECK 1 LOAD</description>
                 <status>0x9F</status>
                 <midino>0x02</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+              <!-- LOAD BUTTON (track) Deck 2-->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.rightLoadTrackButton.input</key>
+                <description>DECK 2 LOAD</description>
+                <status>0x9F</status>
+                <midino>0x03</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <!-- LOAD BUTTON (track) Deck 3-->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.rightLoadTrackButton.input</key>
+                <description>DECK 3 LOAD</description>
+                <status>0x9F</status>
+                <midino>0x04</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <!-- LOAD BUTTON (track) Deck 4-->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.rightLoadTrackButton.input</key>
+                <description>DECK 4 LOAD</description>
+                <status>0x9F</status>
+                <midino>0x05</midino>
                 <options>
                     <script-binding/>
                 </options>
@@ -953,18 +2064,26 @@
                         <script-binding/>
                     </options>
                  </control>
-               <!--
-               <control>
+                 <control>
                     <group>[Library]</group>
-                    <key>DJ202.browseEncoder.input</key>
-                    <description>BROWSER KNOB (shifted)</description>
-                    <status>0xBF</status>
-                    <midino>0x00</midino>
+                    <key>DJ202.sortLibrary</key>
+                    <description>BPM</description>
+                    <status>0x9F</status>
+                    <midino>0x13</midino>
                     <options>
                         <script-binding/>
                     </options>
                 </control>
-                -->
+                <control>
+                    <group>[Library]</group>
+                    <key>DJ202.sortLibrary</key>
+                    <description>SONG</description>
+                    <status>0x9F</status>
+                    <midino>0x12</midino>
+                    <options>
+                        <script-binding/>
+                    </options>
+                </control>
                 <control>
                     <group>[Library]</group>
                     <key>DJ202.browseEncoder.input</key>
@@ -1017,6 +2136,8 @@
                 </control>
                
             <!-- FINE GENERAL VOLUME KNOBS -->
+            <!-- MIXER-->
+             <!-- Deck 1 -->
 
             <control>
                 <group>[Channel1]</group>
@@ -1119,6 +2240,315 @@
                 </options>
             </control>
 
+              <!-- Deck 2 -->
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].pregain.inputMSB</key>
+                <description>DECK 2 TRIM (MSB)</description>
+                <status>0xB1</status>
+                <midino>0x16</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].pregain.inputLSB</key>
+                <description>DECK 2 TRIM (LSB)</description>
+                <status>0xB1</status>
+                <midino>0x34</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel2]_Effect1]</group>
+                <key>DJ202.deck[1].eqKnob[3].inputMSB</key>
+                <description>DECK 2 EQ HI (MSB)</description>
+                <status>0xB1</status>
+                <midino>0x17</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel2]_Effect1]</group>
+                <key>DJ202.deck[1].eqKnob[3].inputLSB</key>
+                <description>DECK 2 EQ HI (LSB)</description>
+                <status>0xB1</status>
+                <midino>0x35</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel2]_Effect1]</group>
+                <key>DJ202.deck[1].eqKnob[2].inputMSB</key>
+                <description>DECK 2 EQ MID (MSB)</description>
+                <status>0xB1</status>
+                <midino>0x18</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel2]_Effect1]</group>
+                <key>DJ202.deck[1].eqKnob[2].inputLSB</key>
+                <description>DECK 2 EQ MID (LSB)</description>
+                <status>0xB1</status>
+                <midino>0x36</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel2]_Effect1]</group>
+                <key>DJ202.deck[1].eqKnob[1].inputMSB</key>
+                <description>DECK 2 EQ LOW (MSB)</description>
+                <status>0xB1</status>
+                <midino>0x19</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel2]_Effect1]</group>
+                <key>DJ202.deck[1].eqKnob[1].inputLSB</key>
+                <description>DECK 2 EQ LOW (LSB)</description>
+                <status>0xB1</status>
+                <midino>0x37</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[QuickEffectRack1_[Channel2]]</group>
+                <key>DJ202.deck[1].filter.input</key>
+                <description>DECK 2 FILTER</description>
+                <status>0xB1</status>
+                <midino>0x1A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel2]</group>
+                <key>DJ202.deck[1].pfl.input</key>
+                <description>DECK 2 CUE/PFL</description>
+                <status>0x91</status>
+                <midino>0x1B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+                <!-- Deck 3 -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].pregain.inputMSB</key>
+                <description>DECK 3 TRIM (MSB)</description>
+                <status>0xB2</status>
+                <midino>0x16</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].pregain.inputLSB</key>
+                <description>DECK 3 TRIM (LSB)</description>
+                <status>0xB2</status>
+                <midino>0x34</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel3]_Effect1]</group>
+                <key>DJ202.deck[2].eqKnob[3].inputMSB</key>
+                <description>DECK 3 EQ HI (MSB)</description>
+                <status>0xB2</status>
+                <midino>0x17</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel3]_Effect1]</group>
+                <key>DJ202.deck[2].eqKnob[3].inputLSB</key>
+                <description>DECK 3 EQ HI (LSB)</description>
+                <status>0xB2</status>
+                <midino>0x35</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel3]_Effect1]</group>
+                <key>DJ202.deck[2].eqKnob[2].inputMSB</key>
+                <description>DECK 3 EQ MID (MSB)</description>
+                <status>0xB2</status>
+                <midino>0x18</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel3]_Effect1]</group>
+                <key>DJ202.deck[2].eqKnob[2].inputLSB</key>
+                <description>DECK 3 EQ MID (LSB)</description>
+                <status>0xB2</status>
+                <midino>0x36</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel3]_Effect1]</group>
+                <key>DJ202.deck[2].eqKnob[1].inputMSB</key>
+                <description>DECK 3 EQ LOW (MSB)</description>
+                <status>0xB2</status>
+                <midino>0x19</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel3]_Effect1]</group>
+                <key>DJ202.deck[2].eqKnob[1].inputLSB</key>
+                <description>DECK 3 EQ LOW (LSB)</description>
+                <status>0xB2</status>
+                <midino>0x37</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[QuickEffectRack1_[Channel3]]</group>
+                <key>DJ202.deck[2].filter.input</key>
+                <description>DECK 3 FILTER</description>
+                <status>0xB2</status>
+                <midino>0x1A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.deck[2].pfl.input</key>
+                <description>DECK 3 CUE/PFL</description>
+                <status>0x92</status>
+                <midino>0x1B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+                <!-- Deck 4 -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].pregain.inputMSB</key>
+                <description>DECK 4 TRIM (MSB)</description>
+                <status>0xB3</status>
+                <midino>0x16</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].pregain.inputLSB</key>
+                <description>DECK 4 TRIM (LSB)</description>
+                <status>0xB3</status>
+                <midino>0x34</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel4]_Effect1]</group>
+                <key>DJ202.deck[3].eqKnob[3].inputMSB</key>
+                <description>DECK 4 EQ HI (MSB)</description>
+                <status>0xB3</status>
+                <midino>0x17</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel4]_Effect1]</group>
+                <key>DJ202.deck[3].eqKnob[3].inputLSB</key>
+                <description>DECK 4 EQ HI (LSB)</description>
+                <status>0xB3</status>
+                <midino>0x35</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel4]_Effect1]</group>
+                <key>DJ202.deck[3].eqKnob[2].inputMSB</key>
+                <description>DECK 4 EQ MID (MSB)</description>
+                <status>0xB3</status>
+                <midino>0x18</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel4]_Effect1]</group>
+                <key>DJ202.deck[3].eqKnob[2].inputLSB</key>
+                <description>DECK 4 EQ MID (LSB)</description>
+                <status>0xB3</status>
+                <midino>0x36</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel4]_Effect1]</group>
+                <key>DJ202.deck[3].eqKnob[1].inputMSB</key>
+                <description>DECK 4 EQ LOW (MSB)</description>
+                <status>0xB3</status>
+                <midino>0x19</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[EqualizerRack1_[Channel4]_Effect1]</group>
+                <key>DJ202.deck[3].eqKnob[1].inputLSB</key>
+                <description>DECK 4 EQ LOW (LSB)</description>
+                <status>0xB3</status>
+                <midino>0x37</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[QuickEffectRack1_[Channel4]]</group>
+                <key>DJ202.deck[3].filter.input</key>
+                <description>DECK 4 FILTER</description>
+                <status>0xB3</status>
+                <midino>0x1A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.deck[3].pfl.input</key>
+                <description>DECK 4 CUE/PFL</description>
+                <status>0x93</status>
+                <midino>0x1B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+
+
+
             <!-- SAMPLER volume & CUE-->
              <control>
                 <group>[Sampler1]</group>
@@ -1198,7 +2628,27 @@
                 </options>
             </control>
 
-       <!-- FINE CENTRAL COMMAND (knob, button, ecc...) -->
+       <!-- INPUT SECTION-->
+       <control>
+        <group>[Master]</group>
+        <key>DJ202.setChannelInput</key>
+        <description>CH 1 PC/LINE/PHONO</description>
+        <status>0xB0</status>
+        <midino>0x22</midino>
+        <options>
+            <script-binding/>
+        </options>
+    </control>
+    <control>
+        <group>[Master]</group>
+        <key>DJ202.setChannelInput</key>
+        <description>CH 2 PC/LINE/PHONO</description>
+        <status>0xB1</status>
+        <midino>0x22</midino>
+        <options>
+            <script-binding/>
+        </options>
+    </control>
 
        <!--  SEQUENCER Toogles-->
        <control>
@@ -1221,6 +2671,7 @@
             <script-binding/>
         </options>
     </control>
+
 
                                  
 
