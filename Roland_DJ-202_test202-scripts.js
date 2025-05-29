@@ -1031,12 +1031,12 @@ DJ202.handleLoop = function(control, group) {
     if (!loopEnabled && !DJ202.padState[control]) {
         engine.setValue(group, "beatloop_" + loopSize, 1);
         DJ202.padState[control] = true;
-        DJ202.setPadLed(control, DJ202.PadsColor.YELLOW); // Accendi giallo
+        DJ202.setPadLed(control, DJ202.PadsColor.YELLOW, group); // Accendi giallo
         console.log(`Loop attivato su PAD ${control} con dimensione ${loopSize}`);
     } else {
         engine.setValue(group, "loop_enabled", false);
         DJ202.padState[control] = false;
-        DJ202.setPadLed(control, DJ202.PadsColor.OFF); // Spegni
+        DJ202.setPadLed(control, DJ202.PadsColor.OFF, group); // Spegni
         console.log(`Loop disattivato su PAD ${control}`);
     }
 };
