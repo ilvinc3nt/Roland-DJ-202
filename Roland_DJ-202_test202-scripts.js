@@ -1101,62 +1101,39 @@ DJ202.sampler = {
 
 // ************************** SECONDARY FUNCTIONS (CueLoop, Roll, ecc...) *******************
 // ********************* CUE LOOP mode - PADs ***********************
-// ************* PARAM -/+ used for CUE LOOP  (workaround)********************
- DJ202.loopSizesCueLoop = {
-    0x43: 1,
-    0x44: 2,
-    0x4B: 4,
-    0x4C: 8,
-};
 
-DJ202.paramButtonPressed = function(channel, control, value, status, group) {
-    const isPressed = value === 0x7F;
-    if (!isPressed) return;
-
+// ********************** PARAM -/+ SECTION ***************************
+  DJ202.paramButtonPressed = function(channel, control, value, status, group) {
     if (!this.currentMode) {
         return;
     }
-
-    // Special case for cue loop in HOTCUE mode
-    if (this.currentMode === DJ202.handleHotcue && DJ202.loopSizesCueLoop[control]) {
-        const loopSize = DJ202.loopSizesCueLoop[control];
-        engine.setValue(group, "cue_loop_enabled", true);
-        engine.setValue(group, "gotoandloop", true);
-        engine.setValue(group, "hotcue_" + loopSize + "_gotoandloop");
-        return;
+    let button;
+    switch (control) {
+    case 0x4B: // PARAMETER 2 minus
+        if (this.currentMode.param2MinusButton) {
+            button = this.currentMode.param2MinusButton;
+            break;
+        }
+        /* falls through */
+    case 0x43: // PARAMETER 1 minus
+        button = this.currentMode.paramMinusButton;
+        break;
+    case 0x4C: // PARAMETER 2 plus
+        if (this.currentMode.param2PlusButton) {
+            button = this.currentMode.param2PlusButton;
+            break;
+        }
+        /* falls through */
+    case 0x44: // PARAMETER 1 plus
+        button = this.currentMode.paramPlusButton;
+        break;
     }
-
-      // ********************** PARAM -/+ SECTION ***************************
-   // Generic case based on currentMode button mapping
-   let button;
-   switch (control) {
-       case 0x4B:
-           if (this.currentMode.param2MinusButton) {
-               button = this.currentMode.param2MinusButton;
-               break;
-           }
-       case 0x43:
-           button = this.currentMode.paramMinusButton;
-           break;
-       case 0x4C:
-           if (this.currentMode.param2PlusButton) {
-               button = this.currentMode.param2PlusButton;
-               break;
-           }
-       case 0x44:
-           button = this.currentMode.paramPlusButton;
-           break;
-   }
-
-   if (button && typeof button.input === "function") {
-       button.input(channel, control, value, status, group);
-   }
+    if (button) {
+        button.input(channel, control, value, status, group);
+    }
 };
 
 // ********************* ROLL mode - PADs ***********************
-
-
-
 DJ202.rollSizes = {
     0x19: 1,   // 1 beat
     0x1A: 2,   // 2 beat

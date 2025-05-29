@@ -1558,7 +1558,6 @@
                     <script-binding/>
                 </options>
             </control>
-            
           
 
              <!-- Deck 1, SAMPLER Pads -->
@@ -1833,7 +1832,7 @@
             <control>
                 <group>[Channel2]</group>
                 <key>DJ202.handlePad</key>
-                <description>DECK 3 LOOP 3</description>
+                <description>DECK 2 LOOP 3</description>
                 <status>0x95</status>
                 <midino>0x13</midino>
                 <options>
@@ -1843,7 +1842,7 @@
             <control>
                 <group>[Channel2]</group>
                 <key>DJ202.handlePad</key>
-                <description>DECK 3 LOOP 4</description>
+                <description>DECK 2 LOOP 4</description>
                 <status>0x95</status>
                 <midino>0x14</midino>
                 <options>
@@ -1853,7 +1852,7 @@
             <control>
                 <group>[Channel2]</group>
                 <key>DJ202.handlePad</key>
-                <description>DECK 3 LOOP 5</description>
+                <description>DECK 2 LOOP 5</description>
                 <status>0x95</status>
                 <midino>0x15</midino>
                 <options>
@@ -1863,7 +1862,7 @@
             <control>
                 <group>[Channel2]</group>
                 <key>DJ202.handlePad</key>
-                <description>DECK 3 LOOP 6</description>
+                <description>DECK 2 LOOP 6</description>
                 <status>0x95</status>
                 <midino>0x16</midino>
                 <options>
@@ -1873,7 +1872,7 @@
             <control>
                 <group>[Channel2]</group>
                 <key>DJ202.handlePad</key>
-                <description>DECK 1 LOOP 7</description>
+                <description>DECK 2 LOOP 7</description>
                 <status>0x95</status>
                 <midino>0x17</midino>
                 <options>
@@ -1883,7 +1882,7 @@
             <control>
                 <group>[Channel2]</group>
                 <key>DJ202.handlePad</key>
-                <description>DECK 3 LOOP 8</description>
+                <description>DECK 2 LOOP 8</description>
                 <status>0x95</status>
                 <midino>0x18</midino>
                 <options>
@@ -1915,7 +1914,7 @@
             <control>
                 <group>[Channel2]</group>
                 <key>DJ202.handlePad</key>
-                <description>DECK 3 - ROLL (loop 4 battute)</description>
+                <description>DECK 2 - ROLL (loop 4 battute)</description>
                 <status>0x95</status>
                 <midino>0x1B</midino>
                 <options>
@@ -1973,7 +1972,663 @@
                 </options>
             </control>
 
+            <!-- DECK 3 -->
+            <!-- Deck 3, HOT CUE Pads -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD1 (set)</description>
+                <status>0x96</status>
+                <midino>0x01</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD2 (set)</description>
+                <status>0x96</status>
+                <midino>0x02</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD3 (set)</description>
+                <status>0x96</status>
+                <midino>0x03</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD4 (set)</description>
+                <status>0x96</status>
+                <midino>0x04</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD5 (set)</description>
+                <status>0x96</status>
+                <midino>0x05</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD6 (set)</description>
+                <status>0x96</status>
+                <midino>0x06</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD7 (set)</description>
+                <status>0x96</status>
+                <midino>0x07</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD8 (set)</description>
+                <status>0x96</status>
+                <midino>0x08</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+                     
+            <!-- Deck 3, HOT CUE Pads (shifted) -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD1 (delete)</description>
+                <status>0x96</status>
+                <midino>0x09</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD2 (delete)</description>
+                <status>0x96</status>
+                <midino>0x0A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD3 (delete)</description>
+                <status>0x96</status>
+                <midino>0x0B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD4 (delete)</description>
+                <status>0x96</status>
+                <midino>0x0C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD5 (delete)</description>
+                <status>0x96</status>
+                <midino>0x0D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD6 (delete)</description>
+                <status>0x96</status>
+                <midino>0x0E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD7 (delete)</description>
+                <status>0x96</status>
+                <midino>0x0F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 3 PAD8 (delete)</description>
+                <status>0x96</status>
+                <midino>0x10</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
 
+            <!-- Deck 3, LOOP Pads -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 1</description>
+                <status>0x96</status>
+                <midino>0x11</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 2</description>
+                <status>0x96</status>
+                <midino>0x12</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 3</description>
+                <status>0x96</status>
+                <midino>0x13</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 4</description>
+                <status>0x96</status>
+                <midino>0x14</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 5</description>
+                <status>0x96</status>
+                <midino>0x15</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 6</description>
+                <status>0x96</status>
+                <midino>0x16</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 7</description>
+                <status>0x96</status>
+                <midino>0x17</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 LOOP 8</description>
+                <status>0x96</status>
+                <midino>0x18</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+             <!-- Deck 3, ROLL Pads  -->
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 - ROLL (loop 1 battuta)</description>
+                <status>0x96</status>
+                <midino>0x19</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 - ROOL (loop 2 battute)</description>
+                <status>0x96</status>
+                <midino>0x1A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 - ROLL (loop 4 battute)</description>
+                <status>0x96</status>
+                <midino>0x1B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 - ROLL (loop 8 battute)</description>
+                <status>0x96</status>
+                <midino>0x1C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 - ROLL (loop in)</description>
+                <status>0x96</status>
+                <midino>0x1D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 - ROLL (loop out)</description>
+                <status>0x96</status>
+                <midino>0x1E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 - ROLL (loop exit)</description>
+                <status>0x96</status>
+                <midino>0x1F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel3]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 3 - ROLL (loop no/off)</description>
+                <status>0x96</status>
+                <midino>0x20</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+            <!-- DECK 4 -->
+            <!-- Deck 4, HOT CUE Pads -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD1 (set)</description>
+                <status>0x97</status>
+                <midino>0x01</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD2 (set)</description>
+                <status>0x97</status>
+                <midino>0x02</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD3 (set)</description>
+                <status>0x97</status>
+                <midino>0x03</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD4 (set)</description>
+                <status>0x97</status>
+                <midino>0x04</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD5 (set)</description>
+                <status>0x97</status>
+                <midino>0x05</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD6 (set)</description>
+                <status>0x97</status>
+                <midino>0x06</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD7 (set)</description>
+                <status>0x97</status>
+                <midino>0x07</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD8 (set)</description>
+                <status>0x97</status>
+                <midino>0x08</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+                     
+            <!-- Deck 4, HOT CUE Pads (shifted) -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD1 (delete)</description>
+                <status>0x97</status>
+                <midino>0x09</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD2 (delete)</description>
+                <status>0x97</status>
+                <midino>0x0A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD3 (delete)</description>
+                <status>0x97</status>
+                <midino>0x0B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD4 (delete)</description>
+                <status>0x97</status>
+                <midino>0x0C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD5 (delete)</description>
+                <status>0x97</status>
+                <midino>0x0D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD6 (delete)</description>
+                <status>0x97</status>
+                <midino>0x0E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD7 (delete)</description>
+                <status>0x97</status>
+                <midino>0x0F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>Deck 4 PAD8 (delete)</description>
+                <status>0x97</status>
+                <midino>0x10</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+            <!-- Deck 4, LOOP Pads -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 LOOP 1</description>
+                <status>0x97</status>
+                <midino>0x11</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 LOOP 2</description>
+                <status>0x97</status>
+                <midino>0x12</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 LOOP 3</description>
+                <status>0x97</status>
+                <midino>0x13</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 LOOP 4</description>
+                <status>0x97</status>
+                <midino>0x14</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 LOOP 5</description>
+                <status>0x97</status>
+                <midino>0x15</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 LOOP 6</description>
+                <status>0x97</status>
+                <midino>0x16</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 LOOP 7</description>
+                <status>0x97</status>
+                <midino>0x17</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 LOOP 8</description>
+                <status>0x97</status>
+                <midino>0x18</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
+             <!-- Deck 4, ROLL Pads  -->
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 - ROLL (loop 1 battuta)</description>
+                <status>0x97</status>
+                <midino>0x19</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 - ROOL (loop 2 battute)</description>
+                <status>0x97</status>
+                <midino>0x1A</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 - ROLL (loop 4 battute)</description>
+                <status>0x97</status>
+                <midino>0x1B</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 - ROLL (loop 8 battute)</description>
+                <status>0x97</status>
+                <midino>0x1C</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 - ROLL (loop in)</description>
+                <status>0x97</status>
+                <midino>0x1D</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 - ROLL (loop out)</description>
+                <status>0x97</status>
+                <midino>0x1E</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+             <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 - ROLL (loop exit)</description>
+                <status>0x97</status>
+                <midino>0x1F</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Channel4]</group>
+                <key>DJ202.handlePad</key>
+                <description>DECK 4 - ROLL (loop no/off)</description>
+                <status>0x97</status>
+                <midino>0x20</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
 
 
 
