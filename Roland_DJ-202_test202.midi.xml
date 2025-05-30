@@ -2,7 +2,7 @@
 <MixxxControllerPreset mixxxVersion="2.1.0+" schemaVersion="1">
     <info>
         <name>Roland DJ-202_test202</name>
-        <author>Vinc Buc, thanks to: Jan Holthuis e ...</author>
+        <author>Vinc Buc, thanks to: Jan Holthuis e Silvio Ankermann</author>
         <description>4-deck mapping for Roland DJ-202 controller</description>
         <forums>...https://mixxx.discourse.group/t/roland-dj-202/17916...</forums>
         <manual>roland_dj_202</manual>

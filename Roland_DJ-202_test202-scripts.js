@@ -230,16 +230,24 @@
     DJ202.shiftFx3 = DJ202.shiftFxSelect(3); 
     
  
-     engine.makeConnection("[Channel3]", "track_loaded", DJ202.autoShowDecks);
-     engine.makeConnection("[Channel4]", "track_loaded", DJ202.autoShowDecks);
- 
-     DJ202.autoShowDecks = function(_value, _group, _control) {
-         const anyLoaded = engine.getValue("[Channel3]", "track_loaded") || engine.getValue("[Channel4]", "track_loaded");
-         if (!DJ202.autoShowFourDecks) {
-             return;
-         }
-         engine.setValue("[Master]", "show_4decks", anyLoaded);
-     };
+    DJ202.autoShowDecks = function(_value, _group, _control) {
+    const anyLoaded = engine.getValue("[Channel3]", "track_loaded") || engine.getValue("[Channel4]", "track_loaded");
+    if (!DJ202.autoShowFourDecks) {
+        return;
+    }
+    engine.setValue("[Master]", "show_4decks", anyLoaded);
+ };
+
+    // Dopo la definizione, fai la connessione
+    engine.makeConnection("[Channel3]", "track_loaded", DJ202.autoShowDecks);
+    engine.makeConnection("[Channel4]", "track_loaded", DJ202.autoShowDecks);
+
+    // Collegamento per il reset dei pad LED su track load
+    DJ202.trackLoadedConnections = [
+        engine.makeConnection("[Channel1]", "track_loaded", DJ202.onTrackLoaded),
+        engine.makeConnection("[Channel2]", "track_loaded", DJ202.onTrackLoaded)
+    ];
+
  
  
      // Send Serato SysEx messages to request initial state and unlock pads
@@ -904,6 +912,15 @@ DJ202.SlipModeButton.prototype.shift = function() {
  };
  
 //************************ Button: Hotcue Loop, Sequencer, Sampler **************************
+DJ202.onTrackLoaded = function(value, group) {
+    if (value) {
+        // Una nuova traccia è stata caricata: aggiorna tutti i LED pad
+        DJ202.updateAllHotcueLeds(group);
+        DJ202.updateAllLoopLeds(group);
+        // DJ202.updateAllRollLeds(group);
+    }
+};
+
  //**************************** LED ON PADS  ***********************************/ 
 DJ202.PadsColor = {
     OFF: 0x00,
@@ -994,6 +1011,24 @@ DJ202.handleHotcueDelete = function(control, group) {
 };
 
 // ********************* LOOP mode - PADs ***********************
+DJ202.updateAllLoopLeds = function(group) {
+    for (let i = 0x11; i <= 0x18; i++) {
+        DJ202.updateLoopPadLed(i, group);
+    }
+};
+
+DJ202.updateLoopPadLed = function(control, group) {
+    const index = control - 0x11;
+    const loopEnabled = engine.getValue(group, `loop_enabled`);
+
+    if (loopEnabled) {
+        DJ202.setPadLed(control, DJ202.PadsColor.YELLOW, group);
+    } else {
+        DJ202.setPadLed(control, DJ202.PadsColor.OFF, group);
+    }
+};
+
+
 // Mappa delle dimensioni del loop per ogni PAD
 DJ202.loopSizes = {
     0x11: 0.125, // PAD1 (0x11): 1/8
