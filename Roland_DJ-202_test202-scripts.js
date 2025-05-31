@@ -547,7 +547,6 @@
      });
  
      // ============================= SLIP BUTTON =======================
- 
      this.slipModeButton = new DJ202.SlipModeButton({
          midi: [0x90 + offset, 0x07],
          //shiftOffset: -8,
@@ -555,22 +554,22 @@
         //sendShifted: true,
      });
 
-    // ============================= SHIFT BUTTON =======================
+    // ======================= SHIFT BUTTON ========================
     DJ202.shiftButton = function(channel, control, value, _status, _group) {
         DJ202.deck.forEach(
-            value ? function(module) { module.shift(); } : function(module) { module.unshift(); }
+            value ? module => module.shift() : module => module.unshift()
         );
     };
-    
-     // ******** Pulsante SHIFT
-     this.shiftButton = new components.Button({
-        midi: [0x90 + offset, 0x00], // Assumendo che SHIFT abbia Control 0x00
+
+    // === COMPONENTE INTERNA (gestione stato SHIFT) ===
+    this.shiftButtonComponent = new components.Button({
+        midi: [0x9F + offset, 0x00],
         input: function(channel, control, value, status, group) {
             DJ202.isShiftActive = (value === 0x7F);
             console.log(`SHIFT ${DJ202.isShiftActive ? "attivato" : "disattivato"}`);
         }
     });
-  
+
      // ============================= SYNC BUTTON ==========================
      this.sync = new components.Button({
         midi: [0x90 + offset, 0x02],
@@ -665,7 +664,6 @@
     });
  
      // ========================== CUE, Play Button ==============================
- 
      this.cue = new components.CueButton({
          midi: [0x90 + offset, 0x01],
          sendShifted: true,
@@ -911,6 +909,43 @@ DJ202.SlipModeButton.prototype.shift = function() {
     this.trigger();
  };
  
+// ======================= GESTIONE PARAM BUTTON ========================
+DJ202.paramButtonPressed = function(channel, control, value, status, group) {
+    if (!this.currentMode) return;
+
+    const isParamMinus = (control === 0x43);
+    if (isParamMinus) {
+        DJ202.isParamMinusPressed[group] = (value === 0x7F);
+    }
+
+    let button;
+
+    switch (control) {
+        case 0x4B: // PARAMETER 2 minus
+            if (this.currentMode.param2MinusButton) {
+                button = this.currentMode.param2MinusButton;
+                break;
+            }
+            break;
+        case 0x43: // PARAMETER 1 minus
+            button = this.currentMode.paramMinusButton;
+            break;
+        case 0x4C: // PARAMETER 2 plus
+            if (this.currentMode.param2PlusButton) {
+                button = this.currentMode.param2PlusButton;
+                break;
+            }
+            break;
+        case 0x44: // PARAMETER 1 plus
+            button = this.currentMode.paramPlusButton;
+            break;
+    }
+
+    if (button) {
+        button.input(channel, control, value, status, group);
+    }
+};
+
 //************************ Button: Hotcue Loop, Sequencer, Sampler **************************
 DJ202.onTrackLoaded = function(value, group) {
     if (value) {
@@ -947,8 +982,6 @@ DJ202.setPadLed = function(control, color, group) {
     const status = DJ202.getStatusByteForGroup(group);
     midi.sendShortMsg(status, control, color);
 };
-
-
 
  //**************************** TAP ON PADS  ***********************************/
  DJ202.handlePad = function(channel, control, value, status, group) {
@@ -1137,44 +1170,10 @@ DJ202.sampler = {
 // ************************** SECONDARY FUNCTIONS (CueLoop, Roll, ecc...) *******************
 // ********************* CUE LOOP mode - PADs ***********************
 
-// ********************** PARAM -/+ SECTION ***************************
-  DJ202.paramButtonPressed = function(channel, control, value, status, group) {
-    if (!this.currentMode) {
-        return;
-    }
-    let button;
-    switch (control) {
-    case 0x4B: // PARAMETER 2 minus
-        if (this.currentMode.param2MinusButton) {
-            button = this.currentMode.param2MinusButton;
-            break;
-        }
-        /* falls through */
-    case 0x43: // PARAMETER 1 minus
-        button = this.currentMode.paramMinusButton;
-        break;
-    case 0x4C: // PARAMETER 2 plus
-        if (this.currentMode.param2PlusButton) {
-            button = this.currentMode.param2PlusButton;
-            break;
-        }
-        /* falls through */
-    case 0x44: // PARAMETER 1 plus
-        button = this.currentMode.paramPlusButton;
-        break;
-    }
-    if (button) {
-        button.input(channel, control, value, status, group);
-    }
-};
 
 // ********************* ROLL mode - PADs ***********************
-DJ202.rollSizes = {
-    0x19: 1,   // 1 beat
-    0x1A: 2,   // 2 beat
-    0x1B: 4,   // 4 beat
-    0x1C: 8,   // 2 beats
-};
+// Oggetto per tenere traccia dello stato reloop per ciascun deck
+DJ202.reloopState = DJ202.reloopState || {};
 
 DJ202.handleRoll = function(control, group, isPressed) {
     const inKeyMap = {
@@ -1184,48 +1183,67 @@ DJ202.handleRoll = function(control, group, isPressed) {
         0x20: 'reloop_toggle',
     };
 
-    const outKeyMap = {
-        0x1D: 'loop_in',
-        0x1E: 'loop_end_position',
-        0x1F: 'loop_remove',
-        0x20: 'reloop_enabled',
-    };
+    // Inizializza stato reloop a OFF se non esiste per il deck
+    if (!(group in DJ202.reloopState)) {
+        DJ202.reloopState[group] = false;
+    }
 
-    // --- PADs 0x19–0x1C = beatlooproll temporaneo (ROLL) ---
-    if (DJ202.rollSizes.hasOwnProperty(control)) {
+    if (DJ202.rollSizes && DJ202.rollSizes.hasOwnProperty(control)) {
         const loopSize = DJ202.rollSizes[control];
-
         if (isPressed) {
-            // Attiva il loop temporaneo
             engine.setValue(group, "beatlooproll_" + loopSize + "_activate", true);
-            DJ202.setPadLed(control, DJ202.PadsColor.RED); // Rosso acceso
-            print(`ROLL ATTIVATO: PAD ${control} → ${loopSize} beat`);
+            DJ202.setPadLed(control, DJ202.PadsColor.RED);
         } else {
-            // Disattiva il loop temporaneo al rilascio
             engine.setValue(group, "beatlooproll_" + loopSize + "_activate", false);
             engine.setValue(group, "beatloop_" + loopSize + "_enabled", false);
-            DJ202.setPadLed(control, DJ202.PadsColor.OFF); // Spegne LED
-            print(`ROLL DISATTIVATO: PAD ${control} → ${loopSize} beat`);
+            DJ202.setPadLed(control, DJ202.PadsColor.OFF);
         }
-
         return;
     }
 
-    // --- PADs 0x1D–0x20 = loop_in, loop_out, ecc. ---
-    else if (inKeyMap.hasOwnProperty(control)) {
-    if (isPressed) {
-        engine.setValue(group, inKeyMap[control], 1);
-        DJ202.setPadLed(control, DJ202.PadsColor.RED);
-        print(`AZIONE ATTIVA: ${inKeyMap[control]} su PAD ${control}`);
-    } else {
-       
-        // Lascia il LED acceso oppure accendilo solo in press
-        DJ202.setPadLed(control, DJ202.PadsColor.RED);
-        print(`AZIONE: rilascio PAD ${control}, ma LED resta acceso`);
-    }
-}
+    if (inKeyMap.hasOwnProperty(control)) {
+        if (isPressed) {
+            engine.setValue(group, inKeyMap[control], 1);
 
+            if (control === 0x1F) {
+                // loop_remove: spegni tutti i LED loop
+                DJ202.setPadLed(control, DJ202.PadsColor.OFF);
+                DJ202.setPadLed(0x1D, DJ202.PadsColor.OFF);
+                DJ202.setPadLed(0x1E, DJ202.PadsColor.OFF);
+                DJ202.setPadLed(0x20, DJ202.PadsColor.OFF);
+                DJ202.reloopState[group] = false; // reset stato reloop
+            } 
+            else if (control === 0x1E) {
+                // PAD6 loop_out: accendi PAD6 e PAD8, attiva reloop ON
+                DJ202.setPadLed(control, DJ202.PadsColor.RED);
+                DJ202.setPadLed(0x20, DJ202.PadsColor.RED);
+                DJ202.reloopState[group] = true;
+            } 
+            else if (control === 0x20) {
+                // PAD8 premuto: toggle stato reloop e LED
+                DJ202.reloopState[group] = !DJ202.reloopState[group];
+                DJ202.setPadLed(control, DJ202.reloopState[group] ? DJ202.PadsColor.RED : DJ202.PadsColor.OFF);
+            } 
+            else {
+                DJ202.setPadLed(control, DJ202.PadsColor.RED);
+            }
+
+        } else {
+            // Rilascio PAD
+            if (control === 0x1F) {
+                DJ202.setPadLed(control, DJ202.PadsColor.OFF);
+            } 
+            else if (control === 0x20) {
+                DJ202.setPadLed(control, DJ202.reloopState[group] ? DJ202.PadsColor.RED : DJ202.PadsColor.OFF);
+            } 
+            else {
+                DJ202.setPadLed(control, DJ202.PadsColor.RED);
+            }
+        }
+    }
 };
+
+
 
 // ********************* SLICER mode - PADs ***********************
 

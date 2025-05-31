@@ -1033,7 +1033,7 @@
                 <group>[Channel2]</group>
                 <key>DJ202.shiftButton</key>
                 <description>SHIFT</description>
-                <status>0x__</status>
+                <status>0x9F</status>
                 <midino>0x00</midino>
                 <options>
                     <script-binding/>
@@ -1044,7 +1044,7 @@
                 <group>[Channel3]</group>
                 <key>DJ202.shiftButton</key>
                 <description>SHIFT</description>
-                <status>0x__</status>
+                <status>0x9F</status>
                 <midino>0x00</midino>
                 <options>
                     <script-binding/>
@@ -1055,7 +1055,7 @@
                 <group>[Channel4]</group>
                 <key>DJ202.shiftButton</key>
                 <description>SHIFT</description>
-                <status>0x__</status>
+                <status>0x9F</status>
                 <midino>0x00</midino>
                 <options>
                     <script-binding/>
@@ -1063,7 +1063,7 @@
             </control>
             <!-- PARAM -/+ BUTTONS-->
             <!-- Deck 1 -->
-             <control>
+            <control>
                 <group>[Channel1]</group>
                 <key>DJ202.paramButtonPressed</key>
                 <description>DECK 1 PARAMETER 1 MINUS</description>
