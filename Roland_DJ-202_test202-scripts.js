@@ -30,85 +30,64 @@
 
     //LOAD BUTTON TO DECK 1,2,3,4
  
- DJ202.leftLoadTrackButton = new components.Button({
-     group: "[Channel1]",
-     midi: [0x9F, 0x02],
-     unshift: function() {
-     this.inKey = "LoadSelectedTrack";
-     },
-     
-     shift: function() {
-     this.inKey = "eject";
-     },
-     
-     input: function(channel, control, value, status, _group) {
-     this.send(this.isPress(channel, control, value, status) ? this.on : this.off);
-     components.Button.prototype.input.apply(this, arguments);    
-     },
-     
-     updateLed: function() {    
-     // Controlla se c'è una traccia caricata
-     const hasTrack = engine.getValue(this.group, "track_samples") > 0;     
-     
-     // Aggiorna lo stato del LED
-     this.send(hasTrack ? this.on : this.off);
-     },
-     });
-      
-     // Aggiorna periodicamente lo stato del LED sul DECK1 e DECK3
-     engine.makeConnection("[Channel1]", "track_samples", function() {
-     DJ202.leftLoadTrackButton.updateLed();
-     });    
-     engine.makeConnection("[Channel3]", "track_samples", function() {
-     DJ202.leftLoadTrackButton.updateLed();
-     });
+// Funzione per creare un pulsante LOAD per ogni deck
+DJ202.createLoadTrackButton = function(channelGroup, midiStatus, midiControl) {
+    const button = new components.Button({
+        group: channelGroup,
+        midi: [midiStatus, midiControl],
 
-     
-     DJ202.deck3Button = new DJ202.DeckToggleButton({
-     midi: [0x90, 0x08],
-     decks: [1, 3],
-     loadTrackButton: DJ202.leftLoadTrackButton,
-     });
-        
-     DJ202.rightLoadTrackButton = new components.Button({
-     group: "[Channel2]",
-     midi: [0x9F, 0x03],
-     unshift: function() {
-     this.inKey = "LoadSelectedTrack";
-     },
-     
-     shift: function() {
-     this.inKey = "eject";
-     },
-     
-     input: function(channel, control, value, status, _group) {
-     this.send(this.isPress(channel, control, value, status) ? this.on : this.off);
-     components.Button.prototype.input.apply(this, arguments);
-     },
-     
-     updateLed: function() {
-     // Controlla se c'è una traccia caricata
-     const hasTrack = engine.getValue(this.group, "track_samples") > 0;
-          
-     // Aggiorna lo stato del LED
-     this.send(hasTrack ? this.on : this.off);
-     },
-     });
+        input: function(channel, control, value, status, _group) {
+            if (!this.isPress(channel, control, value, status)) return;
 
-     // Aggiorna periodicamente lo stato del LED sul DECK2 e DECK4 
-     engine.makeConnection("[Channel2]", "track_samples", function() {
-     DJ202.rightLoadTrackButton.updateLed();
-     }); 
-     engine.makeConnection("[Channel4]", "track_samples", function() {
-     DJ202.rightLoadTrackButton.updateLed();
-     });
+            const hasTrack = engine.getValue(this.group, "track_samples") > 0;
 
-     
-     DJ202.deck4Button = new DJ202.DeckToggleButton({
-     midi: [0x91, 0x08],
-     decks: [2, 4],
-     loadTrackButton: DJ202.rightLoadTrackButton,
-     });
+            if (hasTrack) {
+                engine.setValue(this.group, "eject", 1);
+            } else {
+                engine.setValue(this.group, "LoadSelectedTrack", 1);
+            }
+
+            this.updateLed(); // Aggiorna LED dopo l’azione
+        },
+
+        updateLed: function() {
+            const hasTrack = engine.getValue(this.group, "track_samples") > 0;
+            this.send(hasTrack ? this.on : this.off);
+        }
+    });
+
+    // Connetti aggiornamento LED al caricamento traccia
+    engine.makeConnection(channelGroup, "track_samples", function() {
+        button.updateLed();
+    });
+
+    return button;
+};
+
+// Crea i pulsanti LOAD per i deck sinistro e destro
+DJ202.leftLoadTrackButton = DJ202.createLoadTrackButton("[Channel1]", 0x9F, 0x02);
+DJ202.rightLoadTrackButton = DJ202.createLoadTrackButton("[Channel2]", 0x9F, 0x03);
+
+// Pulsanti per passare da Deck1 a Deck3 e da Deck2 a Deck4
+DJ202.deck3Button = new DJ202.DeckToggleButton({
+    midi: [0x90, 0x08],
+    decks: [1, 3],
+    loadTrackButton: DJ202.leftLoadTrackButton,
+});
+
+DJ202.deck4Button = new DJ202.DeckToggleButton({
+    midi: [0x91, 0x08],
+    decks: [2, 4],
+    loadTrackButton: DJ202.rightLoadTrackButton,
+});
+
+
+
+    // All'avvio: esegue l'eject su tutti i deck per LED spenti
+    ["[Channel1]", "[Channel2]", "[Channel3]", "[Channel4]"].forEach(group => {
+        engine.setValue(group, "eject", 1);
+    });
+
      
 
     // *********** MAIN VOLUME/KNOB SECTION ************************
@@ -248,8 +227,6 @@
         engine.makeConnection("[Channel2]", "track_loaded", DJ202.onTrackLoaded)
     ];
 
- 
- 
      // Send Serato SysEx messages to request initial state and unlock pads
      midi.sendSysexMsg([0xF0, 0x00, 0x20, 0x7F, 0x00, 0xF7], 6);
      midi.sendSysexMsg([0xF0, 0x00, 0x20, 0x7F, 0x01, 0xF7], 6);
@@ -549,9 +526,6 @@
      // ============================= SLIP BUTTON =======================
      this.slipModeButton = new DJ202.SlipModeButton({
          midi: [0x90 + offset, 0x07],
-         //shiftOffset: -8,
-         //shiftControl: true,
-        //sendShifted: true,
      });
 
     // ======================= SHIFT BUTTON ========================
@@ -863,51 +837,51 @@
      }
  };
  
- // =============================  SLIP FUNCTION & VINYL CONTROL ==================================
- DJ202.SlipModeButton = function(options) {
-    components.Button.call(this, options);
-};
-DJ202.SlipModeButton.prototype = Object.create(components.Button.prototype);
+    // =============================  SLIP FUNCTION & VINYL CONTROL ==================================
+    DJ202.SlipModeButton = function(options) {
+        components.Button.call(this, options);
+    };
+    DJ202.SlipModeButton.prototype = Object.create(components.Button.prototype);
 
-// Comportamento senza Shift (Slip Mode)
-DJ202.SlipModeButton.prototype.unshift = function() {
-    this.inKey = "slip_enabled";
-    this.outKey = "slip_enabled";
-    this.type = components.Button.prototype.types.toggle;
+    // Comportamento senza Shift (Slip Mode)
+    DJ202.SlipModeButton.prototype.unshift = function() {
+        this.inKey = "slip_enabled";
+        this.outKey = "slip_enabled";
+        this.type = components.Button.prototype.types.toggle;
 
-    // Comportamento semplice: attiva/disattiva Slip Mode con un singolo tap
-    this.input = function(channel, control, value, _status, _group) {
-        if (value) { // Solo sul "press", non sul "release"
-            const slipEnabled = engine.getValue(this.group, "slip_enabled");
-            engine.setValue(this.group, "slip_enabled", !slipEnabled); // Toggle Slip Mode
-            console.log(`Slip Mode ${!slipEnabled ? "attivato" : "disattivato"}`);
-        }
+        // Comportamento semplice: attiva/disattiva Slip Mode con un singolo tap
+        this.input = function(channel, control, value, _status, _group) {
+            if (value) { // Solo sul "press", non sul "release"
+                const slipEnabled = engine.getValue(this.group, "slip_enabled");
+                engine.setValue(this.group, "slip_enabled", !slipEnabled); // Toggle Slip Mode
+                console.log(`Slip Mode ${!slipEnabled ? "attivato" : "disattivato"}`);
+            }
+        };
+
+        this.disconnect();
+        this.connect();
+        this.trigger();
     };
 
-    this.disconnect();
-    this.connect();
-    this.trigger();
-};
+    // Comportamento con Shift (Vinyl Control)
+    DJ202.SlipModeButton.prototype.shift = function() {
+        this.inKey = "vinylcontrol_enabled";
+        this.outKey = "vinylcontrol_enabled";
+        this.type = components.Button.prototype.types.toggle;
 
-// Comportamento con Shift (Vinyl Control)
-DJ202.SlipModeButton.prototype.shift = function() {
-    this.inKey = "vinylcontrol_enabled";
-    this.outKey = "vinylcontrol_enabled";
-    this.type = components.Button.prototype.types.toggle;
+        // Comportamento semplice: attiva/disattiva Vinyl Control
+        this.input = function(channel, control, value, _status, _group) {
+            if (value) { // Solo sul "press", non sul "release"
+                const vinylEnabled = engine.getValue(this.group, "vinylcontrol_enabled");
+                engine.setValue(this.group, "vinylcontrol_enabled", !vinylEnabled); // Toggle Vinyl Control
+                console.log(`Vinyl Control ${!vinylEnabled ? "attivato" : "disattivato"}`);
+            }
+        };
 
-    // Comportamento semplice: attiva/disattiva Vinyl Control
-    this.input = function(channel, control, value, _status, _group) {
-        if (value) { // Solo sul "press", non sul "release"
-            const vinylEnabled = engine.getValue(this.group, "vinylcontrol_enabled");
-            engine.setValue(this.group, "vinylcontrol_enabled", !vinylEnabled); // Toggle Vinyl Control
-            console.log(`Vinyl Control ${!vinylEnabled ? "attivato" : "disattivato"}`);
-        }
+        this.disconnect();
+        this.connect();
+        this.trigger();
     };
-
-    this.disconnect();
-    this.connect();
-    this.trigger();
- };
  
 // ======================= GESTIONE PARAM BUTTON ========================
 DJ202.paramButtonPressed = function(channel, control, value, status, group) {

@@ -2659,7 +2659,7 @@
              <!-- LOAD BUTTON (track) Deck 3-->
             <control>
                 <group>[Channel3]</group>
-                <key>DJ202.rightLoadTrackButton.input</key>
+                <key>DJ202.leftLoadTrackButton.input</key>
                 <description>DECK 3 LOAD</description>
                 <status>0x9F</status>
                 <midino>0x04</midino>
