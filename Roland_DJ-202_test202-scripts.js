@@ -31,23 +31,34 @@
     //LOAD BUTTON TO DECK 1,2,3,4
  
 // Funzione per creare un pulsante LOAD per ogni deck
+// Funzione per creare un pulsante LOAD con tap breve e lungo
 DJ202.createLoadTrackButton = function(channelGroup, midiStatus, midiControl) {
     const button = new components.Button({
         group: channelGroup,
         midi: [midiStatus, midiControl],
+        pressTime: 0,
+        longPressThreshold: 300, // millisecondi
 
         input: function(channel, control, value, status, _group) {
-            if (!this.isPress(channel, control, value, status)) return;
+            const isPressed = this.isPress(channel, control, value, status);
 
-            const hasTrack = engine.getValue(this.group, "track_samples") > 0;
-
-            if (hasTrack) {
-                engine.setValue(this.group, "eject", 1);
+            if (isPressed) {
+                this.pressTime = Date.now();
             } else {
-                engine.setValue(this.group, "LoadSelectedTrack", 1);
-            }
+                const duration = Date.now() - this.pressTime;
+                const longPress = duration > this.longPressThreshold;
 
-            this.updateLed(); // Aggiorna LED dopo l’azione
+                if (longPress) {
+                    // TAP lungo → espelli traccia
+                    engine.setValue(this.group, "eject", 1);
+                } else {
+                    // TAP breve → carica o cambia traccia
+                    engine.setValue(this.group, "LoadSelectedTrack", 1);
+                }
+
+                // aggiorna LED dopo l'azione
+                this.updateLed();
+            }
         },
 
         updateLed: function() {
@@ -80,7 +91,6 @@ DJ202.deck4Button = new DJ202.DeckToggleButton({
     decks: [2, 4],
     loadTrackButton: DJ202.rightLoadTrackButton,
 });
-
 
 
     // All'avvio: esegue l'eject su tutti i deck per LED spenti
