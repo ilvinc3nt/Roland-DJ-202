@@ -1256,10 +1256,6 @@ DJ202.Sequencer = function() {
             // SHIFT + SYNC → spegne il LED e azzera syncDeck
             this.syncDeck = -1;
     
-            // Forza il LED a spegnersi con doppio comando
-            midi.sendShortMsg(0x9F, 0x53, 0x7F); // accende (per sicurezza)
-            midi.sendShortMsg(0x8F, 0x53, 0x00); // NOTE OFF → spegne il LED
-    
             return;
         }
     
@@ -1280,12 +1276,10 @@ DJ202.Sequencer = function() {
     
         this.syncDeck = deck;
     
-        // Accendi il LED SYNC
-        midi.sendShortMsg(0x9F, 0x53, 0x7F);
     };
     
     this.cueButton = new components.Button({
-        group: "[Channel1]",
+        group: "[Sampler1]",
         key: "pfl",
         type: components.Button.prototype.types.toggle,
         midi: [0x9F, 0x1D],

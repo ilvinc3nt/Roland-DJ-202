@@ -2885,7 +2885,7 @@
                 </options>
             </control>
             <control>
-                <group>[Channel1]</group>
+                <group>[Sampler1]</group>
                 <key>DJ202.deck[0].pfl.input</key>
                 <description>DECK 1 CUE/PFL</description>
                 <status>0x90</status>
