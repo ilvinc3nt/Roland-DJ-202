@@ -1070,7 +1070,9 @@ DJ202.padState = {
     0x18: false  // PAD8
 };
 
-// Gestione LOOP per ogni PAD
+// Stato globale per il loop attivo
+DJ202.loopActivePad = null;
+
 DJ202.handleLoop = function(control, group) {
     const loopSize = DJ202.loopSizes[control];
     if (loopSize === undefined) {
@@ -1080,18 +1082,34 @@ DJ202.handleLoop = function(control, group) {
 
     const loopEnabled = engine.getValue(group, "loop_enabled");
 
-    if (!loopEnabled && !DJ202.padState[control]) {
+    if (!loopEnabled) {
+        // Attiva il loop e salva il PAD attivo
         engine.setValue(group, "beatloop_" + loopSize, 1);
-        DJ202.padState[control] = true;
+        DJ202.loopActivePad = control;
         DJ202.setPadLed(control, DJ202.PadsColor.YELLOW, group); // Accendi giallo
         console.log(`Loop attivato su PAD ${control} con dimensione ${loopSize}`);
     } else {
-        engine.setValue(group, "loop_enabled", false);
-        DJ202.padState[control] = false;
-        DJ202.setPadLed(control, DJ202.PadsColor.OFF, group); // Spegni
-        console.log(`Loop disattivato su PAD ${control}`);
+        if (DJ202.loopActivePad === control) {
+            // Se premi lo stesso PAD, disattiva loop e spegni LED
+            engine.setValue(group, "loop_enabled", false);
+            DJ202.setPadLed(control, DJ202.PadsColor.OFF, group);
+            DJ202.loopActivePad = null;
+            console.log(`Loop disattivato su PAD ${control}`);
+        } else {
+            // Se premi un PAD diverso mentre loop è attivo:
+            // Spegni LED del PAD precedente
+            if (DJ202.loopActivePad !== null) {
+                DJ202.setPadLed(DJ202.loopActivePad, DJ202.PadsColor.OFF, group);
+            }
+            // Cambia dimensione loop
+            engine.setValue(group, "beatloop_" + loopSize, 1);
+            DJ202.loopActivePad = control;
+            DJ202.setPadLed(control, DJ202.PadsColor.YELLOW, group);
+            console.log(`Loop esteso/modificato su PAD ${control} con dimensione ${loopSize}`);
+        }
     }
 };
+
 
 // ********************* SAMPLER mode - PADs ***********************
 DJ202.initSamplerLeds = function() {
@@ -1233,49 +1251,50 @@ DJ202.handleRoll = function(control, group, isPressed) {
 
 
 // ********************* SEQUENCER ***********************
-DJ202.getActiveDeck = function() {
-    for (let i = 0; i < 4; i++) {
-        if (engine.getValue("[Channel" + (i + 1) + "]", "play")) {
-            return i;
-        }
-    }
-    return -1;
-};
-
 DJ202.Sequencer = function() {
     this.syncDeck = -1;
 
-    this.syncButtonPressed = function(channel, control, value, _status, _group) {
+    const getActiveDeck = function() {
+        const deckvolume = new Array(0, 0, 0, 0);
+        let volumemax = -1;
+        let newdeck = -1;
+
+        // get volume from the decks and check it for use
+        for (let z = 0; z <= 3; z++) {
+            if (engine.getValue("[Channel" + (z + 1) + "]", "track_loaded") > 0) {
+                deckvolume[z] = engine.getValue("[Channel" + (z + 1) + "]", "volume");
+                if (deckvolume[z] > volumemax) {
+                    volumemax = deckvolume[z];
+                    newdeck = z;
+                }
+            }
+        }
+
+        return newdeck;
+    };
+
+   this.syncButtonPressed = function(channel, control, value, _status, _group) {
         if (value !== 0x7f) {
             return;
         }
-    
         const isShifted = (control === 0x55);
-    
-        if (isShifted) {
-            // SHIFT + SYNC → spegne il LED e azzera syncDeck
+        if (isShifted || this.syncDeck >= 0) {
             this.syncDeck = -1;
-    
-            return;
+        } else {
+            const deck = getActiveDeck();
+            if (deck < 0) {
+                return;
+            }
+            const bpm = engine.getValue("[Channel" + (deck + 1) + "]", "bpm");
+
+            // Minimum BPM is 5.0 (0xEA 0x32 0x00), maximum BPM is 800.0 (0xEA 0x40 0x3e).
+            if (!(bpm >= 5 && bpm <= 800)) {
+                return;
+            }
+            const bpmValue = Math.round(bpm*10);
+            midi.sendShortMsg(0xEA, bpmValue & 0x7f, (bpmValue >> 7) & 0x7f);
+            this.syncDeck = deck;
         }
-    
-        // Premuto solo SYNC
-        const deck = DJ202.getActiveDeck();
-        if (deck < 0) {
-            script.debug("Nessun deck attivo");
-            return;
-        }
-    
-        const bpm = engine.getValue("[Channel" + (deck + 1) + "]", "bpm");
-        if (!(bpm >= 5 && bpm <= 800)) {
-            return;
-        }
-    
-        const bpmValue = Math.round(bpm * 10);
-        midi.sendShortMsg(0xEA, bpmValue & 0x7F, (bpmValue >> 7) & 0x7F);
-    
-        this.syncDeck = deck;
-    
     };
     
     this.cueButton = new components.Button({

@@ -3309,7 +3309,7 @@
        <control>
         <group>[Master]</group>
         <key>DJ202.sequencer.syncButtonPressed</key>
-        <description>TR-S SYNC</description>
+        <description>Sequencer SYNC</description>
         <status>0x9F</status>
         <midino>0x53</midino>
         <options>
@@ -3319,7 +3319,7 @@
     <control>
         <group>[Master]</group>
         <key>DJ202.sequencer.syncButtonPressed</key>
-        <description>TR-S SYNC OFF (shifted)</description>
+        <description>Sequencer SYNC OFF (shifted)</description>
         <status>0x9F</status>
         <midino>0x55</midino>
         <options>
