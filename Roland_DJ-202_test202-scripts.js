@@ -67,6 +67,13 @@ DJ202.createLoadTrackButton = function(channelGroup, midiStatus, midiControl) {
         }
     });
 
+    // Spegne LED e ferma lampeggio quando la traccia finisce (play == 0)
+    engine.makeConnection(channelGroup, "play", function(value) {
+        if (value === 0) {  // traccia ferma o finita
+            button.send(button.off);
+        }
+    });
+
     // Connetti aggiornamento LED al caricamento traccia
     engine.makeConnection(channelGroup, "track_samples", function() {
         button.updateLed();
