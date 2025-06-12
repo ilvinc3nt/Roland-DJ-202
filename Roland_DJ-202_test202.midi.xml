@@ -3201,46 +3201,6 @@
                 </options>
             </control>
 
-
-
-
-            <!-- SAMPLER volume & CUE-->
-             <control>
-                <group>[Sampler1]</group>
-                <key>DJ202.sampler.handleLevelKnob</key>
-                <description>SAMPLER LEVEL KNOB</description>
-                <status>0xBF</status>
-                <midino>0x1A</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Master]</group>
-                <key>DJ202.sequencer.cueButton.input</key>
-                <description>TR/SAMPLER CUE/PFL</description>
-                <status>0x9F</status>
-                <midino>0x1D</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-
-            <!--
-             <control>
-                <group>[Master]</group>
-                <key>DJ202.SamplerMode.pfl.input</key>
-                <status>0x9F</status>
-                <midino>0x1D</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            -->
-            <!-- MAIN KNOB-->
-            
-
-
             <!-- CROSSFADER -->
          <control>
                 <group>[Master]</group>
@@ -3306,6 +3266,36 @@
     </control>
 
        <!--  SEQUENCER Toogles-->
+       <!-- SAMPLER volume & CUE-->
+         <control>
+            <group>[Master]</group>
+            <key>DJ202.sampler.startStopButtonPressed</key>
+            <description>Sequencer STAR/STOP</description>
+            <status>0xFC</status>
+            <options>
+                <script-binding/>
+            </options>
+            </control>
+        <control>
+            <group>[Sampler1]</group>
+            <key>DJ202.sampler.handleLevelKnob</key>
+            <description>SAMPLER LEVEL KNOB</description>
+            <status>0xBF</status>
+            <midino>0x1A</midino>
+            <options>
+                <script-binding/>
+            </options>
+        </control>
+        <control>
+            <group>[Master]</group>
+            <key>DJ202.sequencer.cueButton.input</key>
+            <description>SEQUENCER/SAMPLER CUE/PFL</description>
+            <status>0x9F</status>
+            <midino>0x1D</midino>
+            <options>
+                <script-binding/>
+            </options>
+        </control>
        <control>
         <group>[Master]</group>
         <key>DJ202.sequencer.syncButtonPressed</key>

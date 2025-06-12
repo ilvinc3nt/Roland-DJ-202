@@ -37,7 +37,7 @@ DJ202.createLoadTrackButton = function(channelGroup, midiStatus, midiControl) {
         group: channelGroup,
         midi: [midiStatus, midiControl],
         pressTime: 0,
-        longPressThreshold: 300, // millisecondi
+        longPressThreshold: 300, // ms
 
         input: function(channel, control, value, status, _group) {
             const isPressed = this.isPress(channel, control, value, status);
@@ -67,16 +67,16 @@ DJ202.createLoadTrackButton = function(channelGroup, midiStatus, midiControl) {
         }
     });
 
-    // Spegne LED e ferma lampeggio quando la traccia finisce (play == 0)
-    engine.makeConnection(channelGroup, "play", function(value) {
-        if (value === 0) {  // traccia ferma o finita
-            button.send(button.off);
-        }
-    });
-
-    // Connetti aggiornamento LED al caricamento traccia
+    // Aggiorna LED quando cambia traccia
     engine.makeConnection(channelGroup, "track_samples", function() {
         button.updateLed();
+    });
+
+    // Spegne LED quando la traccia finisce o si ferma
+    engine.makeConnection(channelGroup, "play", function(value) {
+        if (value === 0) {
+            button.send(button.off);
+        }
     });
 
     return button;
@@ -1280,6 +1280,20 @@ DJ202.Sequencer = function() {
         return newdeck;
     };
 
+    this.startStopButtonPressed = function(channel, control, value, status, _group) {
+        if (status === 0xFA) {
+            this.playbackCounter = 1;
+            this.playbackTimer = engine.beginTimer(500, () => {
+                midi.sendShortMsg(0xBA, 0x02, this.playbackCounter);
+                this.playbackCounter = (this.playbackCounter % 4) + 1;
+            });
+        } else if (status === 0xFC) {
+            if (this.playbackTimer) {
+                engine.stopTimer(this.playbackTimer);
+            }
+        }
+    };
+
    this.syncButtonPressed = function(channel, control, value, _status, _group) {
         if (value !== 0x7f) {
             return;
@@ -1303,6 +1317,18 @@ DJ202.Sequencer = function() {
             this.syncDeck = deck;
         }
     };
+
+    this.levelKnob = new components.Pot({
+        group: "[Sampler1]",
+        inKey: "volume",
+        input: function(_channel, _control, _value, _status, _group) {
+            components.Pot.prototype.input.apply(this, arguments);
+            const volume = this.inGetParameter();
+            for (let i = 1; i <= 16; i++) {
+                engine.setValue("[Sampler" + i + "]", this.inKey, volume);
+            }
+        },
+    });
     
     this.cueButton = new components.Button({
         group: "[Sampler1]",
@@ -1318,3 +1344,4 @@ DJ202.Sequencer = function() {
         },
     });
 };
+DJ202.Sequencer.prototype = Object.create(components.ComponentContainer.prototype);
