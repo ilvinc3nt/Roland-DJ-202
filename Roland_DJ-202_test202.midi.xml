@@ -3271,7 +3271,7 @@
             <group>[Master]</group>
             <key>DJ202.sampler.startStopButtonPressed</key>
             <description>Sequencer STAR/STOP</description>
-            <status>0xFC</status>
+            <status>0xBA</status>
             <options>
                 <script-binding/>
             </options>
