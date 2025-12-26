@@ -1120,34 +1120,38 @@ DJ202.handleLoop = function(control, group) {
 
 // ********************* SAMPLER mode - PADs ***********************
 DJ202.initSamplerLeds = function() {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 16; i++) {
         const group = `[Sampler${i + 1}]`;
-        const control = 0x21 + i;
 
-        // Monitora quando viene caricato o scaricato un campione
+        const pad = i % 8;
+        const control = 0x21 + pad;
+
+        const status = i < 8 ? 0x94 : 0x95; // Deck1 vs Deck2
+
         engine.makeConnection(group, "track_loaded", function(value) {
             if (value) {
                 const isPlaying = engine.getValue(group, "play");
                 const color = isPlaying ? DJ202.PadsColor.RED : DJ202.PadsColor.YELLOW;
-                DJ202.setPadLed(control, color);
+                DJ202.setPadLed(status, control, DJ202.PadsColor.YELLOW);
             } else {
-                DJ202.setPadLed(control, DJ202.PadsColor.OFF);
+                DJ202.setPadLed(status, control, DJ202.PadsColor.OFF);
             }
         });
 
-        // Monitora lo stato di riproduzione per cambiare da giallo a rosso e viceversa
         engine.makeConnection(group, "play", function(value) {
             const isLoaded = engine.getValue(group, "track_loaded");
             if (!isLoaded) return;
-
-            if (value === 1) {
-                DJ202.setPadLed(control, DJ202.PadsColor.RED);
-            } else {
-                DJ202.setPadLed(control, DJ202.PadsColor.YELLOW);
-            }
+            DJ202.setPadLed(status, control, value ? DJ202.PadsColor.RED : DJ202.PadsColor.YELLOW);
         });
     }
 };
+
+
+DJ202.setPadLed = function(status, control, color) {
+    midi.sendShortMsg(status, control, color);
+};
+
+
 
 DJ202.sampler = {
     handlePadSampler: function(channel, control, value, status, group) {
@@ -1165,7 +1169,7 @@ DJ202.sampler = {
     handleLevelKnob: function(channel, control, value, status) {
         const scaledValue = value / 32;
 
-        for (let i = 1; i <= 8; i++) {
+        for (let i = 1; i <= 16; i++) {
             const samplerGroup = `[Sampler${i}]`;
             engine.setValue(samplerGroup, "pregain", scaledValue);
         }
