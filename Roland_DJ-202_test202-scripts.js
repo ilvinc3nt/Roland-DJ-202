@@ -1146,13 +1146,6 @@ DJ202.initSamplerLeds = function() {
     }
 };
 
-
-DJ202.setPadLed = function(status, control, color) {
-    midi.sendShortMsg(status, control, color);
-};
-
-
-
 DJ202.sampler = {
     handlePadSampler: function(channel, control, value, status, group) {
         if (value === 0x7F) {
