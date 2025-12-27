@@ -85,8 +85,6 @@ DJ202.createLoadTrackButton = function(channelGroup, midiStatus, midiControl) {
 // Crea i pulsanti LOAD per i deck sinistro e destro
 DJ202.leftLoadTrackButton = DJ202.createLoadTrackButton("[Channel1]", 0x9F, 0x02);
 DJ202.rightLoadTrackButton = DJ202.createLoadTrackButton("[Channel2]", 0x9F, 0x03);
-DJ202.leftLoadTrackButton = DJ202.createLoadTrackButton("[Channel3]", 0x9F, 0x04);
-DJ202.rightLoadTrackButton = DJ202.createLoadTrackButton("[Channel4]", 0x9F, 0x05);
 
 // Pulsanti per passare da Deck1 a Deck3 e da Deck2 a Deck4
 DJ202.deck3Button = new DJ202.DeckToggleButton({

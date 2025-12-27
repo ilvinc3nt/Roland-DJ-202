@@ -502,7 +502,7 @@
             <control>
                 <group>[Master]</group>
                 <key>DJ202.effectUnit[0].effectFocusButton.input</key>
-                <description>FX 1 TAP</description>
+                <description>FX TAP on Deck 1</description>
                 <status>0x98</status>
                 <midino>0x04</midino>
                 <options>
@@ -613,8 +613,8 @@
             </control>
             <control>
                 <group>[Master]</group>
-                <key>DJ202.effectUnit[0].effectFocusButton.input</key>
-                <description>FX TAP ON Deck 2</description>
+                <key>DJ202.effectUnit[1].effectFocusButton.input</key>
+                <description>FX TAP on Deck 2</description>
                 <status>0x99</status>
                 <midino>0x04</midino>
                 <options>
@@ -654,7 +654,7 @@
             <control>
                 <group>[Master]</group>
                 <key>DJ202.effectUnit[1].effectFocusButton.input</key>
-                <description>FX 1 FX MODE</description>
+                <description>FX 2 FX MODE</description>
                 <status>0x99</status>
                 <midino>0x0A</midino>
                 <options>
@@ -692,71 +692,15 @@
                     <script-binding/>
                 </options>
             </control>
-            <!-- Deck 3 -->
-            <!-- Deck 4 -->
             
+            <!-- Deck 3 -->
+            
+           
+           
 
-            <!-- BEATS sul KNOB effectti *********** controllare!!!  -->
-            <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].dryWetKnob.input</key>
-                <description>FX 1 BEATS KNOB</description>
-                <status>0xB8</status>
-                <midino>0x03</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].dryWetKnob.input</key>
-                <description>FX 1 BEATS KNOB PRESS</description>
-                <status>0x98</status>
-                <midino>0x03</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].enableOnChannelButtons.Channel1.input</key>
-                <description>FX 1 CH ASSIGN 1</description>
-                <status>0x98</status>
-                <midino>0x05</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].enableOnChannelButtons.Channel2.input</key>
-                <description>FX 1 CH ASSIGN 2</description>
-                <status>0x98</status>
-                <midino>0x06</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].enableOnChannelButtons.Channel3.input</key>
-                <description>FX 1 CH ASSIGN 3</description>
-                <status>0x98</status>
-                <midino>0x07</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
-            <control>
-                <group>[Master]</group>
-                <key>DJ202.effectUnit[0].enableOnChannelButtons.Channel4.input</key>
-                <description>FX 1 CH ASSIGN 4</description>
-                <status>0x98</status>
-                <midino>0x08</midino>
-                <options>
-                    <script-binding/>
-                </options>
-            </control>
+            <!-- Deck 4 -->
+        
+
               <!-- JOG WHEELS Deck 1-->
             <control>
                 <group>[Channel1]</group>
@@ -2902,7 +2846,7 @@
              <!-- LOAD BUTTON (track) Deck 3-->
             <control>
                 <group>[Channel3]</group>
-                <key>DJ202.rightLoadTrackButton.input</key>
+                <key>DJ202.leftLoadTrackButton.input</key>
                 <description>DECK 3 LOAD</description>
                 <status>0x9F</status>
                 <midino>0x04</midino>
