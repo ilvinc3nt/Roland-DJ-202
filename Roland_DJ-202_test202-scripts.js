@@ -177,11 +177,6 @@ DJ202.deck4Button = new DJ202.DeckToggleButton({
          DJ202.effectUnit[i].enableButtons[3].midi = [0x98 + i, 0x02];       
          DJ202.effectUnit[i].effectFocusButton.midi = [0x98 + i, 0x04];
          DJ202.effectUnit[i].knobs[1].midi = [0xB8 + i, 0x00];
-        
-         for (let j = 1; j <= 4; j++) {
-             DJ202.effectUnit[i].enableOnChannelButtons.addButton("Channel" + j);
-             DJ202.effectUnit[i].enableOnChannelButtons["Channel" + j].midi = [0x98 + i, 0x04 + j];
-         }   
          
          DJ202.effectUnit[i].init();
      }
@@ -1119,38 +1114,46 @@ DJ202.handleLoop = function(control, group) {
 
 
 // ********************* SAMPLER mode - PADs ***********************
+// 1️⃣ FUNZIONE per i LED dei sampler
+DJ202.setSamplerPadLed = function(status, control, color) {
+    midi.sendShortMsg(status, control, color);
+};
+
+// 2️⃣ ARRAY DECKS
 DJ202.SAMPLER_DECKS = [
-    { status: 0x94, base: 1  },  // Deck 1 → Sampler 1–8
-    { status: 0x95, base: 9  },  // Deck 2 → Sampler 9–16
-    { status: 0x96, base: 17 },  // Deck 3 → Sampler 17–24
-    { status: 0x97, base: 25 }   // Deck 4 → Sampler 25–32
+    { status: 0x94, base: 1 },
+    { status: 0x95, base: 9 },
+    { status: 0x96, base: 1 },
+    { status: 0x97, base: 9 }
 ];
 
+// 3️⃣ INIT SAMPLER LEDS
 DJ202.initSamplerLeds = function() {
     DJ202.SAMPLER_DECKS.forEach(deck => {
         for (let pad = 0; pad < 8; pad++) {
             const samplerIndex = deck.base + pad;
             const group = `[Sampler${samplerIndex}]`;
             const control = 0x21 + pad;
-            const status = deck.status;
 
             engine.makeConnection(group, "track_loaded", function(value) {
-                if (value) {
-                    const playing = engine.getValue(group, "play");
-                    DJ202.setPadLed(
-                        status,
-                        control,
-                        playing ? DJ202.PadsColor.RED : DJ202.PadsColor.YELLOW
-                    );
-                } else {
-                    DJ202.setPadLed(status, control, DJ202.PadsColor.OFF);
+                if (!value) {
+                    DJ202.setSamplerPadLed(deck.status, control, DJ202.PadsColor.OFF);
+                    return;
                 }
+
+                const playing = engine.getValue(group, "play");
+                DJ202.setSamplerPadLed(
+                    deck.status,
+                    control,
+                    playing ? DJ202.PadsColor.RED : DJ202.PadsColor.YELLOW
+                );
             });
 
             engine.makeConnection(group, "play", function(value) {
                 if (!engine.getValue(group, "track_loaded")) return;
-                DJ202.setPadLed(
-                    status,
+
+                DJ202.setSamplerPadLed(
+                    deck.status,
                     control,
                     value ? DJ202.PadsColor.RED : DJ202.PadsColor.YELLOW
                 );
@@ -1158,6 +1161,8 @@ DJ202.initSamplerLeds = function() {
         }
     });
 };
+
+
 
 DJ202.sampler = {
     handlePadSampler: function(channel, control, value, status) {
