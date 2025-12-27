@@ -85,6 +85,8 @@ DJ202.createLoadTrackButton = function(channelGroup, midiStatus, midiControl) {
 // Crea i pulsanti LOAD per i deck sinistro e destro
 DJ202.leftLoadTrackButton = DJ202.createLoadTrackButton("[Channel1]", 0x9F, 0x02);
 DJ202.rightLoadTrackButton = DJ202.createLoadTrackButton("[Channel2]", 0x9F, 0x03);
+DJ202.leftLoadTrackButton = DJ202.createLoadTrackButton("[Channel3]", 0x9F, 0x04);
+DJ202.rightLoadTrackButton = DJ202.createLoadTrackButton("[Channel4]", 0x9F, 0x05);
 
 // Pulsanti per passare da Deck1 a Deck3 e da Deck2 a Deck4
 DJ202.deck3Button = new DJ202.DeckToggleButton({
@@ -1119,58 +1121,77 @@ DJ202.handleLoop = function(control, group) {
 
 
 // ********************* SAMPLER mode - PADs ***********************
+DJ202.SAMPLER_DECKS = [
+    { status: 0x94, base: 1  },  // Deck 1 → Sampler 1–8
+    { status: 0x95, base: 9  },  // Deck 2 → Sampler 9–16
+    { status: 0x96, base: 17 },  // Deck 3 → Sampler 17–24
+    { status: 0x97, base: 25 }   // Deck 4 → Sampler 25–32
+];
+
 DJ202.initSamplerLeds = function() {
-    for (let i = 0; i < 16; i++) {
-        const group = `[Sampler${i + 1}]`;
+    DJ202.SAMPLER_DECKS.forEach(deck => {
+        for (let pad = 0; pad < 8; pad++) {
+            const samplerIndex = deck.base + pad;
+            const group = `[Sampler${samplerIndex}]`;
+            const control = 0x21 + pad;
+            const status = deck.status;
 
-        const pad = i % 8;
-        const control = 0x21 + pad;
+            engine.makeConnection(group, "track_loaded", function(value) {
+                if (value) {
+                    const playing = engine.getValue(group, "play");
+                    DJ202.setPadLed(
+                        status,
+                        control,
+                        playing ? DJ202.PadsColor.RED : DJ202.PadsColor.YELLOW
+                    );
+                } else {
+                    DJ202.setPadLed(status, control, DJ202.PadsColor.OFF);
+                }
+            });
 
-        const status = i < 8 ? 0x94 : 0x95; // Deck1 vs Deck2
-
-        engine.makeConnection(group, "track_loaded", function(value) {
-            if (value) {
-                const isPlaying = engine.getValue(group, "play");
-                const color = isPlaying ? DJ202.PadsColor.RED : DJ202.PadsColor.YELLOW;
-                DJ202.setPadLed(status, control, DJ202.PadsColor.YELLOW);
-            } else {
-                DJ202.setPadLed(status, control, DJ202.PadsColor.OFF);
-            }
-        });
-
-        engine.makeConnection(group, "play", function(value) {
-            const isLoaded = engine.getValue(group, "track_loaded");
-            if (!isLoaded) return;
-            DJ202.setPadLed(status, control, value ? DJ202.PadsColor.RED : DJ202.PadsColor.YELLOW);
-        });
-    }
+            engine.makeConnection(group, "play", function(value) {
+                if (!engine.getValue(group, "track_loaded")) return;
+                DJ202.setPadLed(
+                    status,
+                    control,
+                    value ? DJ202.PadsColor.RED : DJ202.PadsColor.YELLOW
+                );
+            });
+        }
+    });
 };
 
 DJ202.sampler = {
-    handlePadSampler: function(channel, control, value, status, group) {
-        if (value === 0x7F) {
-            const loaded = engine.getValue(group, "track_loaded");
-            if (loaded) {
-                engine.setValue(group, "cue_gotoandplay", 1);
-                console.log(`▶ Avvio campione in ${group}`);
-            } else {
-                console.log(`⚠ Nessun campione caricato in ${group}`);
-            }
+    handlePadSampler: function(channel, control, value, status) {
+        if (value !== 0x7F) return;
+
+        const deck = DJ202.SAMPLER_DECKS.find(d => d.status === status);
+        if (!deck) return;
+
+        const padIndex = control - 0x21; // 0–7
+        const samplerIndex = deck.base + padIndex;
+        const group = `[Sampler${samplerIndex}]`;
+
+        if (!engine.getValue(group, "track_loaded")) {
+            console.log(`⚠ Nessun campione in ${group}`);
+            return;
         }
+
+        engine.setValue(group, "cue_gotoandplay", 1);
+        console.log(`▶ Avvio campione in ${group}`);
     },
 
-    handleLevelKnob: function(channel, control, value, status) {
+    handleLevelKnob: function(channel, control, value) {
         const scaledValue = value / 32;
 
-        for (let i = 1; i <= 16; i++) {
-            const samplerGroup = `[Sampler${i}]`;
-            engine.setValue(samplerGroup, "pregain", scaledValue);
+        for (let i = 1; i <= 32; i++) {
+            engine.setValue(`[Sampler${i}]`, "pregain", scaledValue);
         }
 
-        const uiValue = scaledValue * 127;
-        engine.setValue("[Sampler]", "pregain", uiValue);
-    },
+        engine.setValue("[Sampler]", "pregain", scaledValue * 127);
+    }
 };
+
 
 
 // ************************** SECONDARY FUNCTIONS (CueLoop, Roll, ecc...) *******************

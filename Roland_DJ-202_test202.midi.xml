@@ -1591,7 +1591,6 @@
                     <script-binding/>
                 </options>
             </control>
-            
             <control>
                 <group>[Sampler4]</group>
                 <key>DJ202.sampler.handlePadSampler</key>
@@ -1972,6 +1971,7 @@
                     <script-binding/>
                 </options>
             </control>
+
             <!-- Deck 2, SAMPLER Pads -->
              <control>
                 <group>[Sampler9]</group>
@@ -2383,6 +2383,88 @@
                 </options>
             </control>
 
+            <!-- Deck 3, SAMPLER Pads -->
+             <control>
+                <group>[Sampler1]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 3 - SAMPLER S1 PLAYBACK</description>
+                <status>0x96</status>
+                <midino>0x21</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>            
+            <control>
+                <group>[Sampler2]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 3 - SAMPLER S2 PLAYBACK</description>
+                <status>0x96</status>
+                <midino>0x22</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>            
+            <control>
+                <group>[Sampler3]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 3 - SAMPLER S3 PLAYBACK</description>
+                <status>0x96</status>
+                <midino>0x23</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Sampler4]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 3 - SAMPLER S4 PLAYBACK</description>
+                <status>0x96</status>
+                <midino>0x24</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Sampler5]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 3 - SAMPLER S5 PLAYBACK</description>
+                <status>0x96</status>
+                <midino>0x25</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Sampler6]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 3 - SAMPLER S6 PLAYBACK</description>
+                <status>0x96</status>
+                <midino>0x26</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Sampler7]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 3 - SAMPLER S7 PLAYBACK</description>
+                <status>0x96</status>
+                <midino>0x27</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Sampler8]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 3 - SAMPLER S8 PLAYBACK</description>
+                <status>0x96</status>
+                <midino>0x28</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+
             <!-- DECK 4 -->
             <!-- Deck 4, HOT CUE Pads -->
             <control>
@@ -2712,8 +2794,87 @@
                 </options>
             </control>
 
-
-
+             <!-- Deck 4, SAMPLER Pads -->
+             <control>
+                <group>[Sampler9]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 4 - SAMPLER S9 PLAYBACK</description>
+                <status>0x97</status>
+                <midino>0x21</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>            
+            <control>
+                <group>[Sampler10]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 4 - SAMPLER S10 PLAYBACK</description>
+                <status>0x97</status>
+                <midino>0x22</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>            
+            <control>
+                <group>[Sampler11]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 4 - SAMPLER S11 PLAYBACK</description>
+                <status>0x97</status>
+                <midino>0x23</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Sampler12]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 4 - SAMPLER S12 PLAYBACK</description>
+                <status>0x97</status>
+                <midino>0x24</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Sampler13]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 4 - SAMPLER S13 PLAYBACK</description>
+                <status>0x97</status>
+                <midino>0x25</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Sampler14]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 4 - SAMPLER S14 PLAYBACK</description>
+                <status>0x97</status>
+                <midino>0x26</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Sampler15]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 4 - SAMPLER S15 PLAYBACK</description>
+                <status>0x97</status>
+                <midino>0x27</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
+            <control>
+                <group>[Sampler16]</group>
+                <key>DJ202.sampler.handlePadSampler</key>
+                <description>Deck 4 - SAMPLER S16 PLAYBACK</description>
+                <status>0x97</status>
+                <midino>0x28</midino>
+                <options>
+                    <script-binding/>
+                </options>
+            </control>
 
             <!-- CENTRAL COMMAND (knob, button, ecc...) -->
               <!-- LOAD BUTTON (track) Deck 1-->
